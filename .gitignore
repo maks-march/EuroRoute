@@ -7,6 +7,14 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/Dotnet.gitignore
 
+# Custom
+.idea
+*.db*
+Migrations/
+wwwroot/
+.env
+
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
