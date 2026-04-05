@@ -2,7 +2,7 @@ using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistance.EntityTypeConfigurations;
+namespace Persistence.EntityTypeConfigurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -18,5 +18,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(x => x.Login).IsUnique();
 
         builder.Property(x => x.Password).HasMaxLength(256).IsRequired();
+        
+        builder.HasMany(x => x.Trucks)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Orders)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

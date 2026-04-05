@@ -14,7 +14,6 @@ Migrations/
 wwwroot/
 .env
 
-
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
