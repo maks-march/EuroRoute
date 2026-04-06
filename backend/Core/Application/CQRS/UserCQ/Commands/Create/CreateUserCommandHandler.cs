@@ -15,8 +15,8 @@ public class CreateUserCommandHandler(IAppDbContext dbContext)
             Surname = request.Surname,
             Login = request.Login,
             Password = request.Password,
-            Updated = DateTime.Now,
-            Created = DateTime.Now
+            Created = DateTime.Now,
+            Updated = DateTime.Now
         };
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync(cancellationToken);

@@ -5,9 +5,12 @@ namespace Application.Common.Mappings;
 
 public class AssemblyMappingProfile : Profile
 {
-    public AssemblyMappingProfile(Assembly assembly)
+    public AssemblyMappingProfile(params Assembly[] assemblies)
     {
-        ApplyMappingsFromAssembly(assembly);
+        foreach (var assembly in assemblies)
+        {
+            ApplyMappingsFromAssembly(assembly);
+        }
     }
 
     private void ApplyMappingsFromAssembly(Assembly assembly)

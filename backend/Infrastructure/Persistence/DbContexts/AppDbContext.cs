@@ -1,9 +1,9 @@
 using Application.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Persistance.EntityTypeConfigurations;
+using Persistence.EntityTypeConfigurations;
 
-namespace Persistance.DbContexts;
+namespace Persistence.DbContexts;
 
 public class AppDbContext : DbContext, IAppDbContext
 {

@@ -1,11 +1,12 @@
+using System.Reflection;
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistance.DbContexts;
-using static Persistance.Constants;
+using Persistence.DbContexts;
+using static Persistence.Constants;
 
-namespace Persistance;
+namespace Persistence;
 
 public static class DependencyInjection
 {
@@ -55,6 +56,7 @@ public static class DependencyInjection
     public static IServiceProvider ApplyMigrationsSqlite(this IServiceProvider serviceProvider)
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        // dbContext.Database.EnsureDeleted();
         dbContext.Database.EnsureCreated();
         return serviceProvider;
     }
