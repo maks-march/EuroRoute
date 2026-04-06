@@ -1,19 +1,17 @@
+using Application;
 using Microsoft.AspNetCore.HttpOverrides;
-using Persistence;
+using Persistance;
 using WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment()) {
-    builder.Services.AddPersistenceSqlite();
-}
-if (builder.Environment.IsProduction()) {
-    builder.Services.AddPersistence(builder.Configuration);
-}
+builder.Services
+    .AddPersistence(builder.Configuration)
+    .AddApplication()
+    .AddSwaggerGen()
+    .AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 
 // Доверяем только Nginx???
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -25,6 +23,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
+app.UseRouting();
 app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
@@ -38,4 +37,7 @@ app.ApplyMigrations();
 app.UseStaticAssets(builder.Environment);
 
 app.Map("api/", () =>  Results.Ok("Живой"));
+
+app.MapControllers();
+
 app.Run();

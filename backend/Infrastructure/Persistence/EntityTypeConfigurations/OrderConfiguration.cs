@@ -2,7 +2,7 @@ using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.EntityTypeConfigurations;
+namespace Persistance.EntityTypeConfigurations;
 
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
