@@ -1,5 +1,6 @@
 using Microsoft.Extensions.FileProviders;
 using Persistence;
+using WebApi.Middleware;
 
 namespace WebApi;
 
@@ -20,7 +21,7 @@ public static class ApplicationUsesExtensions
         }
     }
     
-    public static void UseStaticAssets(this IApplicationBuilder host, IWebHostEnvironment environment)
+    public static IApplicationBuilder UseStaticAssets(this IApplicationBuilder app, IWebHostEnvironment environment)
     {
         // Убеждаемся, что папка существует (важно при локальном запуске без докера)
         var uploadsPath = Path.Combine(environment.ContentRootPath, "wwwroot");
@@ -30,10 +31,17 @@ public static class ApplicationUsesExtensions
         }
 
         // Настраиваем раздачу статики
-        host.UseStaticFiles(new StaticFileOptions
+        app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(uploadsPath),
             RequestPath = "/files"
         });
+        return app;
+    }
+
+    public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<CustomExceptionHandler>();
+        return app;
     }
 }

@@ -23,8 +23,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
-app.UseStatusCodePages();
+app.UseCustomExceptionHandler();
+app.UseStaticAssets(builder.Environment);
 app.UseRouting();
+
+app.UseStatusCodePages();
 app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
@@ -41,7 +44,6 @@ if (app.Environment.IsProduction())
 
 app.ApplyMigrations();
 
-app.UseStaticAssets(builder.Environment);
 
 app.Map("api/", () =>  Results.Ok("Живой"));
 
