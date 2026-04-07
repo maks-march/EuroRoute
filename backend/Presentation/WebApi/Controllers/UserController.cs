@@ -1,4 +1,3 @@
-using Application.Common.Exceptions;
 using Application.CQRS.DTO;
 using Application.CQRS.UserCQ.Commands.Create;
 using Application.CQRS.UserCQ.Commands.Delete;
@@ -8,7 +7,6 @@ using Application.CQRS.UserCQ.Queries.GetUserList;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApi.Dto;
 
 namespace WebApi.Controllers;

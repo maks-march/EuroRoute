@@ -6,8 +6,8 @@ namespace Application.CQRS.DTO;
 
 public class UserDetailsVm : IMapWith<User>
 {
-    public string Name { get; set; }
-    public string Surname { get; set; }
+    public required string Name { get; set; }
+    public required string Surname { get; set; }
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
 

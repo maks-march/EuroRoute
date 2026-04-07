@@ -3,14 +3,19 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: postgres_db
+    container_name: ${DB_HOST}
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: db
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
   api:
     image: backend
@@ -21,9 +26,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
-    depends_on:
-      - db
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - static:/app/wwwroot
 

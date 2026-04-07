@@ -1,4 +1,3 @@
-using System.Reflection;
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +48,7 @@ public static class DependencyInjection
     public static IServiceProvider ApplyMigrations(this IServiceProvider serviceProvider)
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        dbContext.Database.EnsureCreated();
         dbContext.Database.Migrate();
         return serviceProvider;
     }
