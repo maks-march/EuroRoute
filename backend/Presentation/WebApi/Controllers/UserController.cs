@@ -36,7 +36,7 @@ public class UserController(IMediator mediator, IMapper mapper)
     }
 
     [HttpPost]
-    public async Task<ActionResult<Guid>> Post([FromBody] CreateUserCommand command)
+    public async Task<ActionResult<Guid>> Post([FromForm] CreateUserCommand command)
     {
         var id = await Mediator.Send(command);
         return Ok(id);
@@ -54,7 +54,7 @@ public class UserController(IMediator mediator, IMapper mapper)
     }
     
     [HttpPatch]
-    public async Task<ActionResult<Guid>> Update([FromBody] UpdateUserDto body)
+    public async Task<ActionResult<Guid>> Update([FromForm]UpdateUserDto body)
     {
         var command = Mapper.Map<UpdateUserCommand>(body);
         command.Id = UserId;

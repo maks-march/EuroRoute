@@ -14,7 +14,7 @@ public class CreateUserCommandHandler(IAppDbContext dbContext)
             Name = request.Name,
             Surname = request.Surname,
             Login = request.Login,
-            Password = request.Password,
+            PasswordHash = request.Password,
             Created = DateTime.Now,
             Updated = DateTime.Now
         };

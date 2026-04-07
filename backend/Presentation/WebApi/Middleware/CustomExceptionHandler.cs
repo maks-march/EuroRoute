@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Application.Common.Exceptions;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Middleware;
 
@@ -15,11 +16,11 @@ public class CustomExceptionHandler(RequestDelegate next)
         }
         catch (Exception ex)
         {
-            await HandleExeptionAsync(context, ex);
+            await HandleExceptionAsync(context, ex);
         }
     }
 
-    private Task HandleExeptionAsync(HttpContext context, Exception exception)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = HttpStatusCode.InternalServerError;
         var result = string.Empty;
@@ -31,6 +32,13 @@ public class CustomExceptionHandler(RequestDelegate next)
                 break;
             case NotFoundException notFoundException:
                 code = HttpStatusCode.NotFound;
+                break;
+            case DbUpdateException dbUpdateException:
+                code = HttpStatusCode.Conflict;
+                result = JsonSerializer.Serialize(new { 
+                    error = "Database constraint violation.", 
+                    details = dbUpdateException.InnerException?.Message ?? dbUpdateException.Message,
+                });
                 break;
         }
         context.Response.ContentType = "application/json";

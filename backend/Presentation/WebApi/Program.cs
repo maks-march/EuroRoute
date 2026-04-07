@@ -32,21 +32,16 @@ app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-if (app.Environment.IsProduction())
-{
-    // app.UseExceptionHandler("/Error");
-}
-
 app.ApplyMigrations();
 
-
 app.Map("api/", () =>  Results.Ok("Живой"));
-
+app.MapGet("api/test-error/", () => {
+    throw new Exception("ТЕСТОВАЯ ОШИБКА!");
+});
 app.MapControllers();
 
 app.Run();
