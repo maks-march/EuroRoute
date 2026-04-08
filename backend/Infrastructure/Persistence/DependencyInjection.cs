@@ -1,4 +1,5 @@
 using System.Text;
+using Application.DTO;
 using Application.Interfaces;
 using Application.Interfaces.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +34,8 @@ public static class DependencyInjection
     public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IIdentityService, IdentityService>();
+        
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -44,7 +47,8 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddAuthentication(options =>
+        services
+            .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

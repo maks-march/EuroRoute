@@ -1,9 +1,9 @@
+using Application.DTO;
 using Application.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Common.Auth;
 using Persistence.Common.EntityTypeConfigurations;
 
 namespace Persistence.Common.DbContexts;

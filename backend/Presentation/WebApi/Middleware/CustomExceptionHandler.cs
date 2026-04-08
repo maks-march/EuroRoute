@@ -46,7 +46,7 @@ public class CustomExceptionHandler(RequestDelegate next)
 
         if (result == string.Empty)
         {
-            result = JsonSerializer.Serialize(new { error = exception.Message });
+            result = JsonSerializer.Serialize(new { error = exception.Message, type = exception.GetType().Name });
         }
         return context.Response.WriteAsync(result);
     }

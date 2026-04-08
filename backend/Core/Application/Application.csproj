@@ -23,4 +23,13 @@
       <Folder Include="CQRS\TruckCQ\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Identity.Core">
+        <HintPath>C:\Users\march\.dotnet\shared\Microsoft.AspNetCore.App\10.0.5\Microsoft.Extensions.Identity.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Identity.Stores">
+        <HintPath>C:\Users\march\.dotnet\shared\Microsoft.AspNetCore.App\10.0.5\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

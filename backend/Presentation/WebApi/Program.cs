@@ -40,10 +40,10 @@ if (app.Environment.IsDevelopment() || true)
     app.UseSwaggerUI();
 }
 
-app.ApplyMigrations();
+await app.ApplyMigrations();
 
-// app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

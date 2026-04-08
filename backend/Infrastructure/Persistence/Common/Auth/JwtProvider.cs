@@ -5,6 +5,7 @@ using System.Text;
 using Application.DTO;
 using Application.Interfaces.Auth;
 using Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
@@ -12,22 +13,24 @@ using static Persistence.EnvKeys;
 
 namespace Persistence.Common.Auth;
 
-public class JwtProvider(IConfiguration configuration) : IJwtProvider
+public class JwtProvider(IConfiguration configuration, UserManager<ApplicationUser> userManager) : IJwtProvider
 {
     
-    public string GenerateAccessToken(ApplicationUserDto user)
+    public string GenerateAccessToken(ApplicationUser user)
     {
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.Name, user.UserName),
+            new(JwtRegisteredClaimNames.Name, user.UserName!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         
-        foreach (var role in user.Roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, RoleMapping.ToString(role)));
-        }
+        claims.Add(
+            new Claim(
+                ClaimTypes.Role, 
+                userManager.GetRolesAsync(user).Result.ToHighRole()
+                )
+            );
         
         var secretKey = configuration[Secret]!;
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));

@@ -1,13 +1,12 @@
 using Application.DTO;
 using Application.Interfaces.Auth;
-using AutoMapper;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Persistence.Common.DbContexts;
 
 namespace Persistence.Common.Auth;
 
-public class IdentityService(UserManager<ApplicationUser> userManager, AppDbContext context, IMapper mapper)
+public class IdentityService(UserManager<ApplicationUser> userManager, AppDbContext context)
     : IIdentityService
 {
     public async Task<(bool Succeeded, string[] Errors, Guid UserId)> CreateUserAsync(
@@ -40,7 +39,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager, AppDbCont
         return await context.BusinessUsers.FindAsync(userId);
     }
 
-    public async Task<(bool Succeeded, ApplicationUserDto? User)> CheckPasswordAsync(string userName, string password)
+    public async Task<(bool Succeeded, ApplicationUser? User)> CheckPasswordAsync(string userName, string password)
     {
         var appUser = await userManager.FindByNameAsync(userName);
         if (appUser == null)
@@ -50,17 +49,16 @@ public class IdentityService(UserManager<ApplicationUser> userManager, AppDbCont
         if (!success)
             return (false, null);
         
-        var userDto = mapper.Map<ApplicationUserDto>(appUser);
 
-        return (true, userDto);
+        return (true, appUser);
     }
 
-    public async Task<ApplicationUserDto?> FindUserByNameAsync(string userName)
+    public async Task<ApplicationUser?> FindUserByUsernameAsync(string userName)
     {
         var appUser = await userManager.FindByNameAsync(userName);
         if (appUser == null)
             return null;
         
-        return mapper.Map<ApplicationUserDto>(appUser);
+        return appUser;
     }
 }

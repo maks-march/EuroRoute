@@ -1,8 +1,9 @@
+using Application.Interfaces.Auth;
 using Microsoft.AspNetCore.Identity;
 
-namespace Persistence.Common.Auth;
+namespace Application.DTO;
 
-public class ApplicationUser : IdentityUser<Guid>
+public class ApplicationUser : IdentityUser<Guid>, IApplicationUser
 {
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }

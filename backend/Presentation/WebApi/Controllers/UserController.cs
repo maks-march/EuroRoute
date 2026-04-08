@@ -5,12 +5,16 @@ using Application.CQRS.UserCQ.Queries.GetUserDetails;
 using Application.CQRS.UserCQ.Queries.GetUserList;
 using Application.DTO;
 using AutoMapper;
+using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Dto;
 
 namespace WebApi.Controllers;
 
+
+[Authorize(Roles = RoleMapping.Admin)]
 public class UserController(IMediator mediator, IMapper mapper) 
     : BaseController(mediator, mapper)
 {

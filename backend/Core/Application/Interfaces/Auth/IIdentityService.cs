@@ -10,7 +10,7 @@ public interface IIdentityService
         
     Task<User?> FindBusinessUserByIdAsync(Guid userId);
     
-    Task<ApplicationUserDto?> FindUserByNameAsync(string userName);
+    Task<ApplicationUser?> FindUserByUsernameAsync(string userName);
     
-    Task<(bool Succeeded, ApplicationUserDto? User)> CheckPasswordAsync(string userName, string password);
+    Task<(bool Succeeded, ApplicationUser? User)> CheckPasswordAsync(string userName, string password);
 }

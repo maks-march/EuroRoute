@@ -5,7 +5,7 @@ namespace Application.Interfaces.Auth;
 
 public interface IJwtProvider
 {
-    string GenerateAccessToken(ApplicationUserDto user);
+    string GenerateAccessToken(ApplicationUser user);
     
     string GenerateRefreshToken();
     
