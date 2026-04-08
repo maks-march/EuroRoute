@@ -13,12 +13,10 @@ public class CreateUserCommandHandler(IAppDbContext dbContext)
             Id = Guid.NewGuid(),
             Name = request.Name,
             Surname = request.Surname,
-            Login = request.Login,
-            PasswordHash = request.Password,
             Created = DateTime.Now,
             Updated = DateTime.Now
         };
-        dbContext.Users.Add(user);
+        dbContext.BusinessUsers.Add(user);
         await dbContext.SaveChangesAsync(cancellationToken);
         return user.Id;
     }

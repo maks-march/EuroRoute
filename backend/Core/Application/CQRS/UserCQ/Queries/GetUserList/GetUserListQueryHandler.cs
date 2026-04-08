@@ -1,5 +1,5 @@
 using Application.Common.Exceptions;
-using Application.CQRS.DTO;
+using Application.DTO;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -15,7 +15,7 @@ public class GetUserListQueryHandler(
 {
     public async Task<UserListVm> Handle(GetUserListQuery request, CancellationToken cancellationToken)
     {
-        var users = await dbContext.Users
+        var users = await dbContext.BusinessUsers
             .ProjectTo<UserDetailsVm>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         if (users == null || users.Count == 0)

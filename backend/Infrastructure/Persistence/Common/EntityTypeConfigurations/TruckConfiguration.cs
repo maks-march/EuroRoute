@@ -2,7 +2,7 @@ using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.EntityTypeConfigurations;
+namespace Persistence.Common.EntityTypeConfigurations;
 
 public class TruckConfiguration : IEntityTypeConfiguration<Truck>
 {

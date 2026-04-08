@@ -1,5 +1,6 @@
 using Application.Common.Mappings;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Persistence.Common.Mappings;
 
 namespace WebApi;
 
@@ -16,6 +17,8 @@ public static class DependencyInjection
                     typeof(Application.DependencyInjection).Assembly
                     )
                 );
+            config.CreateMap<Persistence.Common.Auth.ApplicationUser, Application.DTO.ApplicationUserDto>()
+                .ConvertUsing<ApplicationUserConverter>();
         });
         return services;
     }

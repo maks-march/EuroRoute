@@ -10,13 +10,13 @@ public class DeleteUserCommandHandler(IAppDbContext dbContext)
 {
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync([request.Id], cancellationToken: cancellationToken);
+        var user = await dbContext.BusinessUsers.FindAsync([request.Id], cancellationToken: cancellationToken);
         if (user == null || user.Id != request.Id)
         {
             throw new NotFoundException(nameof(User), request.Id);
         }
         
-        dbContext.Users.Remove(user);
+        dbContext.BusinessUsers.Remove(user);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

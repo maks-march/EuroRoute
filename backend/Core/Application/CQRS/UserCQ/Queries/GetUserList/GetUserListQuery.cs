@@ -1,4 +1,4 @@
-using Application.CQRS.DTO;
+using Application.DTO;
 using MediatR;
 
 namespace Application.CQRS.UserCQ.Queries.GetUserList;

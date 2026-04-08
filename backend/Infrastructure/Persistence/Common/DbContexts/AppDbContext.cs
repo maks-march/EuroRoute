@@ -1,13 +1,17 @@
 using Application.Interfaces;
 using Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Persistence.EntityTypeConfigurations;
+using Persistence.Common.Auth;
+using Persistence.Common.EntityTypeConfigurations;
 
-namespace Persistence.DbContexts;
+namespace Persistence.Common.DbContexts;
 
-public class AppDbContext : DbContext, IAppDbContext
+public class AppDbContext 
+    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IAppDbContext
 {
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> BusinessUsers { get; set; }
     public DbSet<Truck> Trucks { get; set; }
     public DbSet<Order> Orders { get; set; }
 
@@ -19,6 +23,7 @@ public class AppDbContext : DbContext, IAppDbContext
         builder.ApplyConfiguration(new UserConfiguration());
         builder.ApplyConfiguration(new TruckConfiguration());
         builder.ApplyConfiguration(new OrderConfiguration());
+        
         base.OnModelCreating(builder);
     }
     

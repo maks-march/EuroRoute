@@ -2,7 +2,7 @@ using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.DbContexts;
+using Persistence.Common.DbContexts;
 using static Persistence.Constants;
 
 namespace Persistence;

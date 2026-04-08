@@ -2,9 +2,9 @@ using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Models;
 
-namespace Application.CQRS.DTO;
+namespace Application.DTO;
 
-public class UserDetailsVm : IMapWith<User>
+public record UserDetailsVm : IMapWith<User>
 {
     public required string Name { get; set; }
     public required string Surname { get; set; }

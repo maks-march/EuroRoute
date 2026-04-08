@@ -10,7 +10,7 @@ public class UpdateUserCommandHandler(IAppDbContext dbContext)
 {
     public async Task<Guid> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.Users.FindAsync([request.Id], cancellationToken: cancellationToken);
+        var user = await dbContext.BusinessUsers.FindAsync([request.Id], cancellationToken: cancellationToken);
         if (user == null || user.Id != request.Id)
         {
             throw new NotFoundException(nameof(User), request.Id);
@@ -19,7 +19,7 @@ public class UpdateUserCommandHandler(IAppDbContext dbContext)
         user.Surname = request.Surname;
         user.Updated = DateTime.Now;
         
-        dbContext.Users.Update(user);
+        dbContext.BusinessUsers.Update(user);
         await dbContext.SaveChangesAsync(cancellationToken);
         return user.Id;
     }

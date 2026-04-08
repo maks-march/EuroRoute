@@ -1,6 +1,6 @@
-namespace Application.CQRS.DTO;
+namespace Application.DTO;
 
-public class UserListVm
+public record UserListVm
 {
     public required IList<UserDetailsVm> Users { get; set; }
 }

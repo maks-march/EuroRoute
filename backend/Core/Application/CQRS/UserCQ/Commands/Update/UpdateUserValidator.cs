@@ -1,7 +1,6 @@
-using Application.CQRS.UserCQ.Commands.Update;
 using FluentValidation;
 
-namespace Application.CQRS.UserCQ.Commands.Create;
+namespace Application.CQRS.UserCQ.Commands.Update;
 
 public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
 {

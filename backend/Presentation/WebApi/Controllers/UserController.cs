@@ -1,9 +1,9 @@
-using Application.CQRS.DTO;
 using Application.CQRS.UserCQ.Commands.Create;
 using Application.CQRS.UserCQ.Commands.Delete;
 using Application.CQRS.UserCQ.Commands.Update;
 using Application.CQRS.UserCQ.Queries.GetUserDetails;
 using Application.CQRS.UserCQ.Queries.GetUserList;
+using Application.DTO;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
