@@ -2,7 +2,7 @@ using Microsoft.Extensions.FileProviders;
 using Persistence;
 using WebApi.Middleware;
 
-namespace WebApi;
+namespace WebApi.Extensions;
 
 public static class ApplicationUsesExtensions
 {

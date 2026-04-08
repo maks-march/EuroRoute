@@ -2,20 +2,14 @@ namespace Domain.Enums;
 
 public static class RoleMapping
 {
-    public static Role ToEnum(this string role)
+    public static string ToString(this Role role)
     {
         return role switch
         {
-            "Admin" => Role.Admin,
-            "Manager" => Role.Manager,
-            _ => Role.User
+            Role.Admin => nameof(Role.Admin),
+            Role.Manager => nameof(Role.Manager),
+            Role.User => nameof(Role.User),
+            _ => string.Empty
         };
-    }
-    
-    public static Role ToEnum(this IList<string> roles)
-    {
-        if (roles.Contains("Admin")) return Role.Admin;
-        if (roles.Contains("Manager")) return Role.Manager;
-        return Role.User;
     }
 }

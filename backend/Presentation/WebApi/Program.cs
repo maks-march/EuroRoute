@@ -1,9 +1,12 @@
 using Application;
 using Microsoft.AspNetCore.HttpOverrides;
 using Persistence;
-using WebApi;
+using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEnvironment(builder.Configuration);
+
 
 builder.Services
     .AddPersistence(builder.Configuration)
@@ -12,6 +15,7 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddConfiguredControllers()
     .AddConfiguredAutoMapper();
+
 
 // Доверяем только Nginx???
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -38,10 +42,9 @@ if (app.Environment.IsDevelopment() || true)
 
 app.ApplyMigrations();
 
-app.Map("api/", () =>  Results.Ok("Живой"));
-app.MapGet("api/test-error/", () => {
-    throw new Exception("ТЕСТОВАЯ ОШИБКА!");
-});
+// app.UseAuthentication();
+// app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

@@ -2,7 +2,7 @@ using Application.Common.Mappings;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Persistence.Common.Mappings;
 
-namespace WebApi;
+namespace WebApi.Extensions;
 
 public static class DependencyInjection
 {
@@ -12,7 +12,7 @@ public static class DependencyInjection
         {
             config.AddProfile(
                 new AssemblyMappingProfile(
-                    typeof(WebApi.DependencyInjection).Assembly,
+                    typeof(DependencyInjection).Assembly,
                     typeof(Persistence.DependencyInjection).Assembly,
                     typeof(Application.DependencyInjection).Assembly
                     )
