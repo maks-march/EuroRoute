@@ -5,26 +5,27 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Controllers;
+namespace WebApi.Common.Controllers;
 
 public class AuthController(IMediator mediator, IMapper mapper) 
     : BaseController(mediator, mapper)
 {
-    [HttpPost("register")]
+    [HttpPost]
     public async Task<IActionResult> Register([FromBody] RegisterCommand command)
     {
         var response = await Mediator.Send(command);
         return Ok(response);
     }
 
-    [HttpPost("login")]
+    [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
         var response = await Mediator.Send(command);
+        HttpContext.Response.Headers.Append("X-Swagger-Token", response.AccessToken);
         return Ok(response);
     }
     
-    [HttpPost("refresh")]
+    [HttpPost]
     public async Task<IActionResult> Refresh([FromBody] RefreshCommand command)
     {
         var response = await Mediator.Send(command);

@@ -1,4 +1,4 @@
-namespace Persistence;
+namespace Persistence.Common;
 
 public static class EnvKeys
 {

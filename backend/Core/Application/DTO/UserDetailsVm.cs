@@ -6,14 +6,17 @@ namespace Application.DTO;
 
 public record UserDetailsVm : IMapWith<User>
 {
-    public required string Name { get; set; }
-    public required string Surname { get; set; }
-    public DateTime Created { get; set; }
-    public DateTime Updated { get; set; }
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
+    public required string Surname { get; init; }
+    public DateTime Created { get; init; }
+    public DateTime Updated { get; init; }
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<User, UserDetailsVm>()
+            .ForMember(vm => vm.Id,
+                opt => opt.MapFrom(src => src.Id))
             .ForMember(vm => vm.Name,
                 opt => opt.MapFrom(src => src.Name))
             .ForMember(vm => vm.Surname,

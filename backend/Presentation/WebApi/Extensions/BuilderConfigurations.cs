@@ -1,5 +1,5 @@
 using DotNetEnv;
-using Persistence;
+using Persistence.Common;
 
 namespace WebApi.Extensions;
 

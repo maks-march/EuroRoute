@@ -5,16 +5,15 @@ using Application.CQRS.UserCQ.Queries.GetUserDetails;
 using Application.CQRS.UserCQ.Queries.GetUserList;
 using Application.DTO;
 using AutoMapper;
-using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Dto;
+using WebApi.DTO;
 
-namespace WebApi.Controllers;
+namespace WebApi.Common.Controllers;
 
 
-[Authorize(Roles = RoleMapping.Admin)]
+[Authorize]
 public class UserController(IMediator mediator, IMapper mapper) 
     : BaseController(mediator, mapper)
 {
@@ -38,6 +37,7 @@ public class UserController(IMediator mediator, IMapper mapper)
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Guid>> Post([FromForm] CreateUserCommand command)
     {
         var id = await Mediator.Send(command);
@@ -45,6 +45,7 @@ public class UserController(IMediator mediator, IMapper mapper)
     }
     
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UserDetailsVm>> Delete(Guid id)
     {
         var query = new DeleteUserCommand()
@@ -55,11 +56,16 @@ public class UserController(IMediator mediator, IMapper mapper)
         return NoContent();
     }
     
-    [HttpPatch]
+    [HttpPatch("me")]
     public async Task<ActionResult<Guid>> Update([FromForm]UpdateUserDto body)
     {
         var command = Mapper.Map<UpdateUserCommand>(body);
         command.Id = UserId;
+        Console.WriteLine(UserId);
+        if (UserId == Guid.Empty)
+        {
+            return Unauthorized();
+        }
         var id = await Mediator.Send(command);
         return Ok(id);
     }

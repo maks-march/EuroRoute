@@ -11,8 +11,9 @@
 .idea
 *.db*
 Migrations/
-wwwroot/
 .env
+**/wwwroot/*
+!**/wwwroot/swagger/
 
 # Build results
 [Dd]ebug/

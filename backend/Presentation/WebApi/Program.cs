@@ -1,20 +1,16 @@
 using Application;
 using Microsoft.AspNetCore.HttpOverrides;
-using Persistence;
+using Persistence.Extensions;
 using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironment(builder.Configuration);
 
-
 builder.Services
-    .AddPersistence(builder.Configuration)
-    .AddApplication()
-    .AddSwaggerGen()
-    .AddEndpointsApiExplorer()
-    .AddConfiguredControllers()
-    .AddConfiguredAutoMapper();
+    .AddPersistenceServices(builder.Configuration)
+    .AddApplicationServices()
+    .AddWebApiServices();
 
 
 // Доверяем только Nginx???
@@ -37,10 +33,15 @@ app.UseForwardedHeaders();
 if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+        c.InjectJavascript("/api/files/swagger/swagger-auth.js");
+    });
 }
 
-await app.ApplyMigrations();
+app.ApplyMigrations();
+await app.SeedData();
 
 app.UseAuthentication();
 app.UseAuthorization();

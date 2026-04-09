@@ -10,13 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistence.Common.Auth;
 using Persistence.Common.DbContexts;
-using static Persistence.EnvKeys;
+using static Persistence.Common.EnvKeys;
 
-namespace Persistence;
+namespace Persistence.Extensions;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuth(configuration);
         
@@ -31,7 +31,7 @@ public static class DependencyInjection
         };
     }
 
-    public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IIdentityService, IdentityService>();
@@ -73,8 +73,8 @@ public static class DependencyInjection
         services.AddAuthorization();
         return services;
     }
-    
-    public static IServiceCollection AddNpsqlContext(this IServiceCollection services, string connectionString)
+
+    private static IServiceCollection AddNpsqlContext(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<AppDbContext>(options =>
         {
@@ -85,7 +85,7 @@ public static class DependencyInjection
         return services;
     }
     
-    public static IServiceCollection AddSqliteContext(this IServiceCollection services, string connectionString)
+    private static IServiceCollection AddSqliteContext(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<AppDbContext>(options =>
         {
@@ -94,21 +94,5 @@ public static class DependencyInjection
         
         services.AddScoped<IAppDbContext, AppDbContext>();
         return services;
-    }
-    
-    public static IServiceProvider ApplyMigrations(this IServiceProvider serviceProvider)
-    {
-        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
-        dbContext.Database.EnsureCreated();
-        dbContext.Database.Migrate();
-        return serviceProvider;
-    }
-    
-    public static IServiceProvider ApplyMigrationsSqlite(this IServiceProvider serviceProvider)
-    {
-        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
-        // dbContext.Database.EnsureDeleted();
-        dbContext.Database.EnsureCreated();
-        return serviceProvider;
     }
 }

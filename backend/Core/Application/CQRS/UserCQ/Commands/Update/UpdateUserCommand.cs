@@ -2,9 +2,9 @@ using MediatR;
 
 namespace Application.CQRS.UserCQ.Commands.Update;
 
-public class UpdateUserCommand : IRequest<Guid>
+public record UpdateUserCommand : IRequest<Guid>
 {
     public Guid Id { get; set; }
-    public required string Name { get; set; }
-    public required string Surname { get; set; }
+    public required string Name { get; init; }
+    public required string Surname { get; init; }
 }

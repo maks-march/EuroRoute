@@ -2,7 +2,7 @@ using Application.Common.Mappings;
 using Application.CQRS.UserCQ.Commands.Update;
 using AutoMapper;
 
-namespace WebApi.Dto;
+namespace WebApi.DTO;
 
 public class UpdateUserDto : IMapWith<UpdateUserCommand>
 {

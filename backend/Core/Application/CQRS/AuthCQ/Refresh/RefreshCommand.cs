@@ -3,7 +3,8 @@ using MediatR;
 
 namespace Application.CQRS.AuthCQ.Refresh;
 
-public record RefreshCommand(
-    string AccessToken, 
-    string RefreshToken
-) : IRequest<AuthResponse>;
+public record RefreshCommand : IRequest<AuthResponse>
+{
+    public required string AccessToken { get; init; }
+    public required string RefreshToken { get; init; }
+}

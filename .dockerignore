@@ -20,6 +20,8 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
-**/wwwroot/
+
+**/wwwroot/*
+!**/wwwroot/swagger/
 LICENSE
 README.md

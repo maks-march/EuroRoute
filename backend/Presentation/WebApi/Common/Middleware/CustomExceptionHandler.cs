@@ -4,7 +4,7 @@ using Application.Common.Exceptions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApi.Middleware;
+namespace WebApi.Common.Middleware;
 
 public class CustomExceptionHandler(RequestDelegate next)
 {
