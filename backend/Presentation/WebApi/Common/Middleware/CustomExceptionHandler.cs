@@ -36,10 +36,27 @@ public class CustomExceptionHandler(RequestDelegate next)
             case DbUpdateException dbUpdateException:
                 code = HttpStatusCode.Conflict;
                 result = JsonSerializer.Serialize(new { 
-                    error = "Database constraint violation.", 
-                    details = dbUpdateException.InnerException?.Message ?? dbUpdateException.Message,
+                    error = dbUpdateException.Message, 
+                    details = dbUpdateException.InnerException?.Message ?? "Database constraint violation.",
                 });
                 break;
+            case UnauthorizedAccessException unauthorizedAccessException:
+                code = HttpStatusCode.Unauthorized;
+                result = JsonSerializer.Serialize(new
+                {
+                    error = unauthorizedAccessException.Message,
+                    details = unauthorizedAccessException.InnerException?.Message ?? "Access denied.",
+                });
+                break;
+            case InvalidOperationException invalidOperationException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonSerializer.Serialize(new
+                {
+                    error = invalidOperationException.Message,
+                    details = invalidOperationException.InnerException?.Message ?? "Invalid operation.",
+                });
+                break;
+                
         }
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;

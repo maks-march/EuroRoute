@@ -1,0 +1,191 @@
+using System.Net.Http.Json;
+using System.Reflection;
+using Application.CQRS.AuthCQ.Login;
+using Application.CQRS.AuthCQ.Refresh;
+using Application.CQRS.AuthCQ.Register;
+using Application.DTO.Auth;
+using ApplicationTest.Common;
+using FluentAssertions;
+
+namespace ApplicationTest.IntegreationTests;
+
+public class AuthControllerTests : BaseIntegrationTest
+{
+    private const string Password = "Password123!";
+
+    private async Task<AuthResponse?> Register(string login)
+    {
+        var command = new RegisterCommand
+        {
+            Name = "Test",
+            Surname = "User",
+            Login = login,
+            Password = Password
+        };
+        var response = await _client.PostAsJsonAsync("/api/Auth/register", command);
+        
+        response.IsSuccessStatusCode.Should().BeTrue();
+        return await response.Content.ReadFromJsonAsync<AuthResponse>();
+    }
+    
+    private async Task<AuthResponse?> Refresh(AuthResponse? authResponse)
+    {
+        var command = new RefreshCommand
+        {
+            AccessToken = authResponse.AccessToken,
+            RefreshToken = authResponse.RefreshToken,
+        };
+        var response = await _client.PostAsJsonAsync("/api/Auth/refresh", command);
+        
+        response.IsSuccessStatusCode.Should().BeTrue();
+        return await response.Content.ReadFromJsonAsync<AuthResponse>();
+    }
+    
+    [Test]
+    public async Task Register_WithInvalidData_ShouldBeValidationError()
+    {
+        var login = string.Concat(
+            Enumerable.Repeat("Register_WithInvalidData_ShouldBeValidationError", 20)
+            );
+        var authResponse = await Register(login);
+        
+        authResponse.Should().NotBeNull();
+        authResponse.AccessToken.Should().NotBeNullOrEmpty();
+        authResponse.RefreshToken.Should().NotBeNullOrEmpty();
+        authResponse.UserName.Should().Be(login);
+        Refresh(authResponse).Result.Should().NotBeNull();
+    }
+    
+    [Test]
+    public async Task Register_WithValidData_ShouldReturnAuthResponse()
+    {
+        var login = "Register_WithValidData_ShouldReturnAuthResponse";
+        var authResponse = await Register(login);
+        
+        authResponse.Should().NotBeNull();
+        authResponse.AccessToken.Should().NotBeNullOrEmpty();
+        authResponse.RefreshToken.Should().NotBeNullOrEmpty();
+        authResponse.UserName.Should().Be(login);
+        Refresh(authResponse).Result.Should().NotBeNull();
+    }
+    
+    [Test]
+    public async Task Login_WithValidCredentials_ShouldReturnAuthResponse()
+    {
+        var login = "Login_WithValidCredentials_ShouldReturnAuthResponse";
+        await Register(login);
+        
+        var loginCommand = new LoginCommand
+        {
+            Login = login,
+            Password = Password
+        };
+        
+        var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
+        
+        response.IsSuccessStatusCode.Should().BeTrue();
+
+        var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+        authResponse.Should().NotBeNull();
+        authResponse.AccessToken.Should().NotBeNullOrEmpty();
+        authResponse.RefreshToken.Should().NotBeNullOrEmpty();
+        Refresh(authResponse).Result.Should().NotBeNull();
+    }
+    
+    [Test]
+    public async Task Login_WithInvalidCredentials_ShouldReturnUnauthorized()
+    {
+        var loginCommand = new LoginCommand
+        {
+            Login = "nonexistent@user.com",
+            Password = "wrongpassword"
+        };
+        
+        var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+    }
+    
+    [Test]
+    public async Task Login_WithInvalidPassword_ShouldReturnUnauthorized()
+    {
+        var login = "Login_WithInvalidPassword_ShouldReturnUnauthorized";
+        await Register(login);
+        
+        var loginCommand = new LoginCommand
+        {
+            Login = login,
+            Password = "wrongpassword"
+        };
+        
+        var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+    }
+
+    [Test]
+    public async Task Refresh_WithValidCredentials_ShouldReturnAuthResponse()
+    {
+        var login = "Refresh_WithValidCredentials_ShouldReturnAuthResponse";
+        var authResponse = await Register(login);
+        
+        var response = await Refresh(authResponse);
+        
+        response.Should().NotBeNull();
+        response.AccessToken.Should().NotBeNullOrEmpty();
+        response.RefreshToken.Should().NotBeNullOrEmpty();
+        response.UserName.Should().Be(login);
+        Refresh(response).Result.Should().NotBeNull();
+    }
+    
+    [Test]
+    public async Task Refresh_WithInvalidCredentials_ShouldReturnUnauthorized()
+    {
+        var login = "Refresh_WithInvalidAccessToken_ShouldReturnUnauthorized";
+        var authResponse = await Register(login);
+        
+        var refreshCommandInvalidAccess = new RefreshCommand
+        {
+            AccessToken = authResponse.AccessToken.Substring(0, authResponse.AccessToken.Length / 2),
+            RefreshToken = authResponse.RefreshToken
+        };
+        var refreshCommandInvalidRefresh = new RefreshCommand
+        {
+            AccessToken = authResponse.AccessToken,
+            RefreshToken = authResponse.RefreshToken.Substring(0, authResponse.RefreshToken.Length / 2)
+        };
+        
+        var responseInvalidAccess = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommandInvalidAccess);
+        var responseInvalidRefresh = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommandInvalidRefresh);
+        
+        responseInvalidAccess.IsSuccessStatusCode.Should().BeFalse();
+        responseInvalidAccess.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+        responseInvalidRefresh.IsSuccessStatusCode.Should().BeFalse();
+        responseInvalidRefresh.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+    }
+    
+    [Test]
+    public async Task Refresh_WithOthersTokens_ShouldReturnUnauthorized()
+    {
+        var login = "Refresh_WithOthersTokens_ShouldReturnUnauthorized";
+        var authResponse = await Register(login);
+        var authResponse2 = await Register(login + "2");
+        
+        var refreshCommand = new RefreshCommand
+        {
+            AccessToken = authResponse!.AccessToken,
+            RefreshToken = authResponse2!.RefreshToken
+        };
+        var refreshCommand2 = new RefreshCommand
+        {
+            AccessToken = authResponse2.AccessToken,
+            RefreshToken = authResponse.RefreshToken
+        };
+        
+        var response = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommand);
+        var response2 = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommand2);
+        
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+        response2.IsSuccessStatusCode.Should().BeFalse();
+        response2.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+    }
+}

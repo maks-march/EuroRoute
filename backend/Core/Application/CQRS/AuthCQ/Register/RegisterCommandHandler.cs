@@ -28,13 +28,14 @@ public class RegisterCommandHandler(
         if (userDto == null)
             throw new InvalidOperationException("Failed to find user after creation.");
         
+        var appUser = await userManager.FindByIdAsync(userId.ToString());
+        if (appUser == null) 
+            throw new InvalidOperationException("Failed to find user after creation.");
+        
         // 3. Генерируем токены
         var accessToken = jwtProvider.GenerateAccessToken(userDto);
         var refreshToken = jwtProvider.GenerateRefreshToken();
 
-        var appUser = await userManager.FindByIdAsync(userId.ToString());
-        if (appUser == null) 
-            throw new InvalidOperationException("User not found in Identity.");
         
         // 4. Сохраняем Refresh Token в базу
         appUser.RefreshToken = refreshToken;

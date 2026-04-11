@@ -21,7 +21,6 @@ public class AuthController(IMediator mediator, IMapper mapper)
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
         var response = await Mediator.Send(command);
-        HttpContext.Response.Headers.Append("X-Swagger-Token", response.AccessToken);
         return Ok(response);
     }
     

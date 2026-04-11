@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using Application;
 using Microsoft.AspNetCore.HttpOverrides;
 using Persistence.Extensions;
@@ -24,6 +25,10 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseCustomExceptionHandler();
+if (app.Environment.IsDevelopment() && false)
+{
+    app.UseDeveloperExceptionPage();
+}
 app.UseStaticAssets(builder.Environment);
 app.UseRouting();
 

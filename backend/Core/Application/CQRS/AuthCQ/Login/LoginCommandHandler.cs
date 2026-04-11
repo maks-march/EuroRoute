@@ -16,18 +16,21 @@ public class LoginCommandHandler(
     {
         // 1. Проверяем пароль и получаем DTO пользователя
         var (succeeded, userDto) = await identityService.CheckPasswordAsync(request.Login, request.Password);
+        if (userDto == null)
+            throw new UnauthorizedAccessException("User not found.");
         
-        if (!succeeded || userDto == null)
+        if (!succeeded)
             throw new UnauthorizedAccessException("Invalid login or password.");
+        
+        var appUser = await userManager.FindByIdAsync(userDto.Id.ToString());
+        if (appUser == null) 
+            throw new InvalidOperationException("User not found after login.");
         
         // 2. Генерируем токены
         var accessToken = jwtProvider.GenerateAccessToken(userDto);
         var refreshToken = jwtProvider.GenerateRefreshToken();
 
         // 3. Сохраняем Refresh Token
-        var appUser = await userManager.FindByIdAsync(userDto.Id.ToString());
-        if (appUser == null) throw new InvalidOperationException("User not found after login.");
-
         appUser.RefreshToken = refreshToken;
         appUser.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
         await userManager.UpdateAsync(appUser);

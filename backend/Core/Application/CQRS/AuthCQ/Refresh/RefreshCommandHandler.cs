@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using Application.DTO;
 using Application.DTO.Auth;
 using Application.Interfaces.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Application.CQRS.AuthCQ.Refresh;
 
@@ -13,13 +15,14 @@ public class RefreshCommandHandler(UserManager<ApplicationUser> userManager, IJw
     {
         // 1. Извлекаем данные пользователя из СТАРОГО, ИСТЕКШЕГО Access Token
         var principal = jwtProvider.GetPrincipalFromExpiredToken(request.AccessToken);
-        if (principal?.Identity?.Name is null)
+        
+        var userName = principal?.Identity?.Name ?? principal?.FindFirst(JwtRegisteredClaimNames.Name)?.Value;
+        if (userName is null)
         {
             throw new UnauthorizedAccessException("Invalid access token or refresh token.");
         }
 
         // 2. Находим пользователя в базе по имени из токена
-        var userName = principal.Identity.Name;
         var user = await userManager.FindByNameAsync(userName);
 
         // 3. Проверяем, что Refresh Token совпадает и не истек
