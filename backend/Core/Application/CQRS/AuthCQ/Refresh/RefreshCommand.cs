@@ -1,4 +1,5 @@
 using Application.DTO;
+using Application.DTO.Auth;
 using MediatR;
 
 namespace Application.CQRS.AuthCQ.Refresh;

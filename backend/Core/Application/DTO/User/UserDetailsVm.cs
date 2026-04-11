@@ -1,10 +1,9 @@
 using Application.Common.Mappings;
 using AutoMapper;
-using Domain.Models;
 
-namespace Application.DTO;
+namespace Application.DTO.User;
 
-public record UserDetailsVm : IMapWith<User>
+public record UserDetailsVm : IMapWith<Domain.Models.User>
 {
     public required Guid Id { get; init; }
     public required string Name { get; init; }
@@ -14,7 +13,7 @@ public record UserDetailsVm : IMapWith<User>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<User, UserDetailsVm>()
+        profile.CreateMap<Domain.Models.User, UserDetailsVm>()
             .ForMember(vm => vm.Id,
                 opt => opt.MapFrom(src => src.Id))
             .ForMember(vm => vm.Name,

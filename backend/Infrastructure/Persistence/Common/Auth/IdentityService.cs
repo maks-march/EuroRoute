@@ -1,4 +1,5 @@
 using Application.DTO;
+using Application.DTO.Auth;
 using Application.Interfaces.Auth;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;

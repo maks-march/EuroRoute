@@ -4,11 +4,13 @@ using Application.CQRS.UserCQ.Commands.Update;
 using Application.CQRS.UserCQ.Queries.GetUserDetails;
 using Application.CQRS.UserCQ.Queries.GetUserList;
 using Application.DTO;
+using Application.DTO.User;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTO;
+using WebApi.DTO.User;
 
 namespace WebApi.Common.Controllers;
 
@@ -17,7 +19,7 @@ namespace WebApi.Common.Controllers;
 public class UserController(IMediator mediator, IMapper mapper) 
     : BaseController(mediator, mapper)
 {
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<UserDetailsVm>> Get(Guid id)
     {
         var query = new GetUserDetailsQuery()
@@ -44,7 +46,7 @@ public class UserController(IMediator mediator, IMapper mapper)
         return Ok(id);
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UserDetailsVm>> Delete(Guid id)
     {
@@ -61,7 +63,6 @@ public class UserController(IMediator mediator, IMapper mapper)
     {
         var command = Mapper.Map<UpdateUserCommand>(body);
         command.Id = UserId;
-        Console.WriteLine(UserId);
         if (UserId == Guid.Empty)
         {
             return Unauthorized();

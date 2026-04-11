@@ -1,8 +1,12 @@
 namespace Domain.Models;
 
-public class Entity
+public abstract class Entity : BaseEntity
 {
-    public required Guid Id { get; set; }
     public required DateTime Created { get; set; } = DateTime.UtcNow;
     public required DateTime Updated { get; set; } = DateTime.UtcNow;
+}
+
+public abstract class BaseEntity
+{
+    public required Guid Id { get; set; }
 }

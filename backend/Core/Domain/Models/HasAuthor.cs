@@ -1,6 +1,6 @@
 namespace Domain.Models;
 
-public class HasAuthor : Entity
+public abstract class HasAuthor : Entity
 {
     public Guid UserId { get; set; }
     

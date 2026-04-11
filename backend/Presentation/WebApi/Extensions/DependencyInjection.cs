@@ -1,6 +1,7 @@
 using Application.Common.Mappings;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi;
+using WebApi.DTO;
 
 namespace WebApi.Extensions;
 

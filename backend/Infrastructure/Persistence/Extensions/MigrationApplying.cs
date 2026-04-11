@@ -1,4 +1,5 @@
 using Application.DTO;
+using Application.DTO.Auth;
 using Application.Interfaces;
 using Domain.Enums;
 using Domain.Models;

@@ -1,7 +1,7 @@
 using Application.Interfaces.Auth;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.DTO;
+namespace Application.DTO.Auth;
 
 public class ApplicationUser : IdentityUser<Guid>, IApplicationUser
 {
