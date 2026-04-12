@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using Application.DTO;
 using Application.DTO.Auth;
 using Application.Interfaces.Auth;
 using MediatR;

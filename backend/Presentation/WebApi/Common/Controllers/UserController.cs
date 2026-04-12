@@ -3,13 +3,11 @@ using Application.CQRS.UserCQ.Commands.Delete;
 using Application.CQRS.UserCQ.Commands.Update;
 using Application.CQRS.UserCQ.Queries.GetUserDetails;
 using Application.CQRS.UserCQ.Queries.GetUserList;
-using Application.DTO;
 using Application.DTO.User;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.DTO;
 using WebApi.DTO.User;
 
 namespace WebApi.Common.Controllers;
@@ -31,6 +29,12 @@ public class UserController(IMediator mediator, IMapper mapper)
     }
     
     [HttpGet]
+    public async Task<ActionResult<UserDetailsVm>> GetMe()
+    {
+        return await Get(UserId);
+    }
+    
+    [HttpGet]
     public async Task<ActionResult<UserListVm>> Get()
     {
         var query = new GetUserListQuery();
@@ -40,7 +44,7 @@ public class UserController(IMediator mediator, IMapper mapper)
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<Guid>> Post([FromForm] CreateUserCommand command)
+    public async Task<ActionResult<Guid>> Post([FromBody] CreateUserCommand command)
     {
         var id = await Mediator.Send(command);
         return Ok(id);
@@ -58,8 +62,8 @@ public class UserController(IMediator mediator, IMapper mapper)
         return NoContent();
     }
     
-    [HttpPatch("me")]
-    public async Task<ActionResult<Guid>> Update([FromForm]UpdateUserDto body)
+    [HttpPatch]
+    public async Task<ActionResult<Guid>> UpdateMe([FromBody]UpdateUserDto body)
     {
         var command = Mapper.Map<UpdateUserCommand>(body);
         command.Id = UserId;

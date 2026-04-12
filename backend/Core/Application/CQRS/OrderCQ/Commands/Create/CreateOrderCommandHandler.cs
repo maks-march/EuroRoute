@@ -17,11 +17,21 @@ public class CreateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
         order.Updated = DateTime.UtcNow;
         
         order.Payment.Id = Guid.NewGuid();
+        order.Payment.OrderId = order.Id;
         order.Transport.Id = Guid.NewGuid();
-        foreach (var payload in order.Payloads) payload.Id = Guid.NewGuid();
-        foreach (var point in order.RoutePoints) point.Id = Guid.NewGuid();
+        order.Transport.OrderId = order.Id;
+        foreach (var payload in order.Payloads)
+        {
+            payload.Id = Guid.NewGuid();
+            payload.OrderId = order.Id;
+        }
+        
         order.RoutePoints.First().IsLoad = true;
-        order.RoutePoints.Last().IsLoad = false;
+        foreach (var point in order.RoutePoints)
+        {
+            point.Id = Guid.NewGuid();
+            point.OrderId = order.Id;
+        }
         
         await dbContext.Orders.AddAsync(order, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);

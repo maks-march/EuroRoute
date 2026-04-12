@@ -1,12 +1,10 @@
-using System.Text.Json;
 using Application.CQRS.OrderCQ.Commands.Create;
-using Application.DTO;
+using Application.CQRS.OrderCQ.Queries.GetOrderDetails;
 using Application.DTO.Order;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.DTO;
 using WebApi.DTO.Order;
 
 namespace WebApi.Common.Controllers;
@@ -17,13 +15,13 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<OrderDetailsVm>> Get(Guid id)
     {
-        throw new NotImplementedException();
+        var query = new GetOrderDetailsQuery() { Id = id };
+        return await Mediator.Send(query);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Guid>> Post([FromBody]CreateOrderDto dto)
+    public async Task<ActionResult<Guid>> Post([FromBody]CreateOrderCommand command)
     {
-        var command = Mapper.Map<CreateOrderCommand>(dto);
         command.UserId = UserId;
         return await Mediator.Send(command);
     }

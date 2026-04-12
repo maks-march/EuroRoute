@@ -15,6 +15,6 @@ public class Payment : OrderField
     
     public bool IsVisible { get; set; } = false;
     public int PaymentAfterDays { get; set; } = 0;
-    public double Prepayment {get; set;}
+    public double Prepayment { get; set; } = 0;
     public bool IsPrepaymentByFuel {get; set;}
 }

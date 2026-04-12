@@ -1,4 +1,3 @@
-using Application.DTO;
 using Application.DTO.Auth;
 using Application.Interfaces.Auth;
 using MediatR;

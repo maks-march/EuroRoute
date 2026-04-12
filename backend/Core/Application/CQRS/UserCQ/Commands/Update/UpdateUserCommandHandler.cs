@@ -15,8 +15,8 @@ public class UpdateUserCommandHandler(IAppDbContext dbContext)
         {
             throw new NotFoundException(nameof(User), request.Id);
         }
-        user.Name = request.Name;
-        user.Surname = request.Surname;
+        user.Name = request.Name ?? user.Name;
+        user.Surname = request.Surname ?? user.Surname;
         user.Updated = DateTime.Now;
         
         dbContext.BusinessUsers.Update(user);

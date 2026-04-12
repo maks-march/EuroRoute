@@ -1,8 +1,6 @@
 using System.Net.Http.Json;
-using System.Reflection;
 using Application.CQRS.AuthCQ.Login;
 using Application.CQRS.AuthCQ.Refresh;
-using Application.CQRS.AuthCQ.Register;
 using Application.DTO.Auth;
 using ApplicationTest.Common;
 using FluentAssertions;
@@ -11,36 +9,6 @@ namespace ApplicationTest.IntegreationTests;
 
 public class AuthControllerTests : BaseIntegrationTest
 {
-    private const string Password = "Password123!";
-
-    private async Task<AuthResponse?> Register(string login)
-    {
-        var command = new RegisterCommand
-        {
-            Name = "Test",
-            Surname = "User",
-            Login = login,
-            Password = Password
-        };
-        var response = await _client.PostAsJsonAsync("/api/Auth/register", command);
-        
-        response.IsSuccessStatusCode.Should().BeTrue();
-        return await response.Content.ReadFromJsonAsync<AuthResponse>();
-    }
-    
-    private async Task<AuthResponse?> Refresh(AuthResponse? authResponse)
-    {
-        var command = new RefreshCommand
-        {
-            AccessToken = authResponse.AccessToken,
-            RefreshToken = authResponse.RefreshToken,
-        };
-        var response = await _client.PostAsJsonAsync("/api/Auth/refresh", command);
-        
-        response.IsSuccessStatusCode.Should().BeTrue();
-        return await response.Content.ReadFromJsonAsync<AuthResponse>();
-    }
-    
     [Test]
     public async Task Register_WithInvalidData_ShouldBeValidationError()
     {
@@ -98,7 +66,7 @@ public class AuthControllerTests : BaseIntegrationTest
         var loginCommand = new LoginCommand
         {
             Login = "nonexistent@user.com",
-            Password = "wrongpassword"
+            Password = "wrong-password"
         };
         
         var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
@@ -114,7 +82,7 @@ public class AuthControllerTests : BaseIntegrationTest
         var loginCommand = new LoginCommand
         {
             Login = login,
-            Password = "wrongpassword"
+            Password = "wrong-password"
         };
         
         var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
@@ -144,7 +112,7 @@ public class AuthControllerTests : BaseIntegrationTest
         
         var refreshCommandInvalidAccess = new RefreshCommand
         {
-            AccessToken = authResponse.AccessToken.Substring(0, authResponse.AccessToken.Length / 2),
+            AccessToken = authResponse!.AccessToken.Substring(0, authResponse.AccessToken.Length / 2),
             RefreshToken = authResponse.RefreshToken
         };
         var refreshCommandInvalidRefresh = new RefreshCommand

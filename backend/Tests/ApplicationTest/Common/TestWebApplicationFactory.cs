@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Persistence.Common.DbContexts;
 
 namespace ApplicationTest.Common;
@@ -15,12 +14,13 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
         builder.UseEnvironment("Testing");
         builder.ConfigureServices(services =>
         {
-            var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            var dbContextDescriptor = services.SingleOrDefault(d => 
+                d.ServiceType == typeof(DbContextOptions<AppDbContext>));
             if (dbContextDescriptor != null)
             {
                 services.Remove(dbContextDescriptor);
             }
-
+            
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
 

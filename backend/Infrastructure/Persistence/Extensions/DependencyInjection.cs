@@ -1,5 +1,4 @@
 using System.Text;
-using Application.DTO;
 using Application.DTO.Auth;
 using Application.Interfaces;
 using Application.Interfaces.Auth;

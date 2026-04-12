@@ -1,5 +1,4 @@
 using Application.Common.Exceptions;
-using Application.DTO;
 using Application.DTO.User;
 using Application.Interfaces;
 using AutoMapper;
@@ -14,7 +13,7 @@ public class GetUserDetailsQueryHandler(
 {
     public async Task<UserDetailsVm> Handle(GetUserDetailsQuery request, CancellationToken cancellationToken)
     {
-        var user = await dbContext.BusinessUsers.FindAsync([request.Id], cancellationToken: cancellationToken);
+        var user = await dbContext.BusinessUsers.FindAsync([request.Id], cancellationToken);
         if (user == null || user.Id != request.Id)
         {
             throw new NotFoundException(nameof(User), request.Id);

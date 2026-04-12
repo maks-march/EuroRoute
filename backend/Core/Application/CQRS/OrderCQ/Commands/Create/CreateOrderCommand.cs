@@ -9,10 +9,11 @@ namespace Application.CQRS.OrderCQ.Commands.Create;
 
 public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
 {
-    public Guid UserId { get; set; }
-    public DateTime StartDate { get; set; }
+    public Guid UserId { get; set; } = Guid.Empty;
+    public DateTime StartDate { get; set; } = DateTime.UtcNow.AddDays(1);
 
-    public OrderStatus Status { get; set; } = OrderStatus.Ready;
+    [DefaultValue(nameof(OrderStatus.Ready))]
+    public string Status { get; set; } = nameof(OrderStatus.Ready);
     public string About { get; set; } = string.Empty;
     
     public int SpecNumber { get; set; } = 0;
@@ -29,6 +30,10 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Created, opt => opt.Ignore())
             .ForMember(dest => dest.Updated, opt => opt.Ignore())
+            .ForMember(dest => 
+                dest.Status,opt =>
+                opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status)))
+            
             
             // Настраиваем маппинг для вложенных DTO
             .ForMember(dest => 
@@ -47,31 +52,37 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
         // Также нам нужны маппинги для самих DTO в их доменные аналоги
         profile.CreateMap<PaymentCommandDto, Payment>()
                .ForMember(dest => dest.Id, opt => opt.Ignore())
-               .ForMember(dest => dest.OrderId, opt => opt.Ignore());
-
+               .ForMember(dest => dest.OrderId, opt => opt.Ignore())
+               .ForMember(dest => 
+                   dest.PaymentType,opt => 
+                   opt.MapFrom(src => Enum.Parse<PaymentType>(src.PaymentType)));
+        
         profile.CreateMap<TransportCommandDto, Transport>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
-               //.ForMember(dest => dest.Order, opt => opt.Ignore());
 
        profile.CreateMap<PayloadCommandDto, Payload>()
            .ForMember(dest => dest.Id, opt => opt.Ignore())
-           .ForMember(dest => dest.OrderId, opt => opt.Ignore());
-       //.ForMember(dest => dest.Order, opt => opt.Ignore())
+           .ForMember(dest => 
+               dest.OrderId, opt => opt.Ignore())
+           .ForMember(dest => 
+               dest.Wrap,opt => 
+               opt.MapFrom(src => Enum.Parse<Wrap>(src.Wrap)));
 
         profile.CreateMap<RoutePointCommandDto, RoutePoints>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
-        //.ForMember(dest => dest.Order, opt => opt.Ignore());
     }
 }
 #region inner dto
 public record PaymentCommandDto
 {
-    public PaymentType PaymentType { get; set; }
-    public bool IsTaxedByCard { get; set; }
-    public bool IsNotTaxedByCard { get; set; }
-    public bool IsByCash { get; set; }
+    [DefaultValue(nameof(Domain.Enums.PaymentType.NoNegotiable))]
+    public string PaymentType { get; set; } = nameof(Domain.Enums.PaymentType.Request);
+    
+    public bool IsTaxedByCard { get; set; } = true;
+    public bool IsNotTaxedByCard { get; set; } = true;
+    public bool IsByCash { get; set; } = true;
     public double TaxedByCard { get; set; } = 0;
     public double NotTaxedByCard { get; set; } = 0;
     public double ByCash { get; set; } = 0;
@@ -83,36 +94,36 @@ public record PaymentCommandDto
 
 public record PayloadCommandDto
 {
-    public string Name { get; set; } = string.Empty;
-    
-    [DefaultValue(1)]
-    public double Weight { get; set; }
-    
-    [DefaultValue(1)]
-    public double Volume { get; set; }
+    public string Name { get; set; } = "Payload";
+
+    [DefaultValue(1)] public double Weight { get; set; } = 1;
+
+    [DefaultValue(1)] public double Volume { get; set; } = 1;
     
     [DefaultValue(1)]
     public int Amount { get; set; } = 1;
-    public Wrap Wrap { get; set; } = Wrap.None;
+    
+    [DefaultValue(nameof(Domain.Enums.Wrap.None))]
+    public string Wrap { get; set; } = nameof(Domain.Enums.Wrap.None);
 }
 
 public record RoutePointCommandDto
 {
-    public string City { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
+    public string City { get; set; } = "Some city";
+    public string Address { get; set; } = "Some address";
     
     [DefaultValue("00:00:00")]
     public TimeSpan LoadTimeStart { get; set; } = TimeSpan.Zero;
     
     [DefaultValue("00:00:00")]
     public TimeSpan LoadTimeEnd { get; set; } = TimeSpan.Zero;
-    public DateTime Date { get; set; } = DateTime.Today;
+    public DateTime Date { get; set; } = DateTime.Today.AddDays(1);
     public bool IsLoad { get; set; } = false;
 }
 
 public record TransportCommandDto
 {
-    public ICollection<string> BodyType { get; set; } = [];
+    public ICollection<string> BodyType { get; set; } = [string.Empty];
     public ICollection<string> LoadType { get; set; } = [];
     public ICollection<string> UnloadType { get; set; } = [];
     

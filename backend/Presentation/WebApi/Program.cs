@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Application;
 using Microsoft.AspNetCore.HttpOverrides;
 using Persistence.Extensions;

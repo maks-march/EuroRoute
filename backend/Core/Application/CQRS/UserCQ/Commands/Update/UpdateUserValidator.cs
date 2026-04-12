@@ -7,10 +7,8 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
     public UpdateUserValidator()
     {
         RuleFor(command => command.Name)
-            .NotEmpty()
             .MaximumLength(50);
         RuleFor(command => command.Surname)
-            .NotEmpty()
             .MaximumLength(50);
     }
 }

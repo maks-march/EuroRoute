@@ -6,8 +6,8 @@ namespace WebApi.DTO.User;
 
 public class UpdateUserDto : IMapWith<UpdateUserCommand>
 {
-    public required string Name { get; set; }
-    public required string Surname { get; set; }
+    public string? Name { get; set; } = null;
+    public string? Surname { get; set; } = null;
 
     public void Mapping(Profile profile)
     {
