@@ -70,7 +70,7 @@ public class AuthControllerTests : BaseIntegrationTest
         };
         
         var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
     }
     
     [Test]
@@ -86,7 +86,7 @@ public class AuthControllerTests : BaseIntegrationTest
         };
         
         var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
     }
 
     [Test]

@@ -7,21 +7,61 @@ using MediatR;
 
 namespace Application.CQRS.OrderCQ.Commands.Create;
 
+/// <summary>
+/// Команда для создания нового заказа
+/// </summary>
 public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
 {
+    /// <summary>
+    /// Идентификатор пользователя, создающего заказ
+    /// </summary>
     public Guid UserId { get; set; } = Guid.Empty;
-    public DateTime StartDate { get; set; } = DateTime.UtcNow.AddDays(1);
 
+    /// <summary>
+    /// Дата начала выполнения заказа
+    /// </summary>
+    public DateTime StartDate { get; init; } = DateTime.UtcNow.AddDays(1);
+
+    /// <summary>
+    /// Статус заказа
+    /// </summary>
     [DefaultValue(nameof(OrderStatus.Ready))]
-    public string Status { get; set; } = nameof(OrderStatus.Ready);
-    public string About { get; set; } = string.Empty;
-    
-    public int SpecNumber { get; set; } = 100;
-    public PaymentCommandDto Payment { get; set; } = new();
-    public TransportCommandDto Transport { get; set; } = new();
-    public ICollection<PayloadCommandDto> Payloads { get; set; } = [];
-    public ICollection<RoutePointCommandDto> RoutePoints { get; set; } = [];
+    public string Status { get; init; } = nameof(OrderStatus.Ready);
 
+    /// <summary>
+    /// Дополнительная информация о заказе
+    /// </summary>
+    public string About { get; init; } = string.Empty;
+    
+    /// <summary>
+    /// Номер спецификации
+    /// </summary>
+    public int SpecNumber { get; init; } = 100;
+
+    /// <summary>
+    /// Информация об оплате
+    /// </summary>
+    public PaymentCommandDto Payment { get; init; } = new();
+
+    /// <summary>
+    /// Информация о транспорте
+    /// </summary>
+    public TransportCommandDto Transport { get; init; } = new();
+
+    /// <summary>
+    /// Коллекция грузов
+    /// </summary>
+    public ICollection<PayloadCommandDto> Payloads { get; init; } = [];
+
+    /// <summary>
+    /// Коллекция точек маршрута
+    /// </summary>
+    public ICollection<RoutePointCommandDto> RoutePoints { get; init; } = [];
+
+    /// <summary>
+    /// Настройка маппинга команды в доменную модель заказа
+    /// </summary>
+    /// <param name="profile">Профиль маппера AutoMapper</param>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<CreateOrderCommand, Order>()
@@ -73,73 +113,223 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
     }
 }
+
 #region inner dto
+
+/// <summary>
+/// DTO с информацией об оплате
+/// </summary>
 public record PaymentCommandDto
 {
+    /// <summary>
+    /// Тип оплаты
+    /// </summary>
     [DefaultValue(nameof(Domain.Enums.PaymentType.NoNegotiable))]
-    public string PaymentType { get; set; } = nameof(Domain.Enums.PaymentType.Request);
+    public string PaymentType { get; init; } = nameof(Domain.Enums.PaymentType.Request);
     
-    public bool IsTaxedByCard { get; set; } = true;
-    public bool IsNotTaxedByCard { get; set; } = true;
-    public bool IsByCash { get; set; } = true;
-    public double TaxedByCard { get; set; } = 0;
-    public double NotTaxedByCard { get; set; } = 0;
-    public double ByCash { get; set; } = 0;
-    public bool IsVisible { get; set; } = false;
-    public int PaymentAfterDays { get; set; } = 0;
-    public double Prepayment { get; set; } = 0;
-    public bool IsPrepaymentByFuel { get; set; } = false;
+    /// <summary>
+    /// Флаг оплаты налогооблагаемой картой
+    /// </summary>
+    public bool IsTaxedByCard { get; init; } = true;
+
+    /// <summary>
+    /// Флаг оплаты не налогооблагаемой картой
+    /// </summary>
+    public bool IsNotTaxedByCard { get; init; } = true;
+
+    /// <summary>
+    /// Флаг оплаты наличными
+    /// </summary>
+    public bool IsByCash { get; init; } = true;
+
+    /// <summary>
+    /// Сумма оплаты налогооблагаемой картой
+    /// </summary>
+    public double TaxedByCard { get; init; }
+
+    /// <summary>
+    /// Сумма оплаты не налогооблагаемой картой
+    /// </summary>
+    public double NotTaxedByCard { get; init; }
+
+    /// <summary>
+    /// Сумма оплаты наличными
+    /// </summary>
+    public double ByCash { get; init; }
+
+    /// <summary>
+    /// Флаг видимости условий оплаты
+    /// </summary>
+    public bool IsVisible { get; init; }
+
+    /// <summary>
+    /// Количество дней отсрочки платежа
+    /// </summary>
+    public int PaymentAfterDays { get; init; }
+
+    /// <summary>
+    /// Сумма предоплаты
+    /// </summary>
+    public double Prepayment { get; init; }
+
+    /// <summary>
+    /// Флаг предоплаты топливом
+    /// </summary>
+    public bool IsPrepaymentByFuel { get; init; }
 }
 
+/// <summary>
+/// DTO с информацией о грузе
+/// </summary>
 public record PayloadCommandDto
 {
-    public string Name { get; set; } = "Payload";
+    /// <summary>
+    /// Наименование груза
+    /// </summary>
+    public string Name { get; init; } = "Payload";
 
-    [DefaultValue(1)] public double Weight { get; set; } = 1;
+    /// <summary>
+    /// Вес груза
+    /// </summary>
+    [DefaultValue(1)] public double Weight { get; init; } = 1;
 
-    [DefaultValue(1)] public double Volume { get; set; } = 1;
+    /// <summary>
+    /// Объем груза
+    /// </summary>
+    [DefaultValue(1)] public double Volume { get; init; } = 1;
     
+    /// <summary>
+    /// Количество грузовых мест
+    /// </summary>
     [DefaultValue(1)]
-    public int Amount { get; set; } = 1;
+    public int Amount { get; init; } = 1;
     
+    /// <summary>
+    /// Тип упаковки груза
+    /// </summary>
     [DefaultValue(nameof(Domain.Enums.Wrap.None))]
-    public string Wrap { get; set; } = nameof(Domain.Enums.Wrap.None);
+    public string Wrap { get; init; } = nameof(Domain.Enums.Wrap.None);
 }
 
+/// <summary>
+/// DTO с информацией о точке маршрута
+/// </summary>
 public record RoutePointCommandDto
 {
-    public string City { get; set; } = "Some city";
-    public string Address { get; set; } = "Some address";
+    /// <summary>
+    /// Город точки маршрута
+    /// </summary>
+    public string City { get; init; } = "Some city";
+
+    /// <summary>
+    /// Адрес точки маршрута
+    /// </summary>
+    public string Address { get; init; } = "Some address";
     
+    /// <summary>
+    /// Время начала загрузки/разгрузки
+    /// </summary>
     [DefaultValue("00:00:00")]
-    public TimeSpan LoadTimeStart { get; set; } = TimeSpan.Zero;
+    public TimeSpan LoadTimeStart { get; init; } = TimeSpan.Zero;
     
+    /// <summary>
+    /// Время окончания загрузки/разгрузки
+    /// </summary>
     [DefaultValue("00:00:00")]
-    public TimeSpan LoadTimeEnd { get; set; } = TimeSpan.Zero;
-    public DateTime Date { get; set; } = DateTime.Today.AddDays(1);
-    public bool IsLoad { get; set; } = false;
+    public TimeSpan LoadTimeEnd { get; init; } = TimeSpan.Zero;
+
+    /// <summary>
+    /// Дата прибытия в точку маршрута
+    /// </summary>
+    public DateTime Date { get; init; } = DateTime.Today.AddDays(1);
+
+    /// <summary>
+    /// Флаг, является ли точка погрузочной
+    /// </summary>
+    public bool IsLoad { get; init; }
 }
 
+/// <summary>
+/// DTO с информацией о транспорте
+/// </summary>
 public record TransportCommandDto
 {
-    public ICollection<string> BodyType { get; set; } = [string.Empty];
-    public ICollection<string> LoadType { get; set; } = [];
-    public ICollection<string> UnloadType { get; set; } = [];
+    /// <summary>
+    /// Тип кузова транспортного средства
+    /// </summary>
+    public ICollection<string> BodyType { get; init; } = [string.Empty];
+
+    /// <summary>
+    /// Тип погрузки
+    /// </summary>
+    public ICollection<string> LoadType { get; init; } = [];
+
+    /// <summary>
+    /// Тип разгрузки
+    /// </summary>
+    public ICollection<string> UnloadType { get; init; } = [];
     
+    /// <summary>
+    /// Количество транспортных средств
+    /// </summary>
     [DefaultValue(1)]
-    public int Vehicles { get; set; } = 1;
-    public int? TemperatureFrom { get; set; }
-    public int? TemperatureTo { get; set; }
-    public bool IsCrewFull { get; set; } = false;
+    public int Vehicles { get; init; } = 1;
+
+    /// <summary>
+    /// Нижняя граница температурного режима
+    /// </summary>
+    public int? TemperatureFrom { get; init; }
+
+    /// <summary>
+    /// Верхняя граница температурного режима
+    /// </summary>
+    public int? TemperatureTo { get; init; }
+
+    /// <summary>
+    /// Флаг наличия полной бригады
+    /// </summary>
+    public bool IsCrewFull { get; init; }
     
+    /// <summary>
+    /// Класс опасности ADR
+    /// </summary>
     [DefaultValue(1)]
-    public int Adr { get; set; } = 1;
-    public bool IsHitch { get; set; } = false;
-    public bool IsPneumaticVehicle { get; set; } = false;
-    public bool IsStakes { get; set; } = false;
-    public bool IsTir { get; set; } = false;
-    public bool IsT1 { get; set; } = false;
-    public bool IsCmr { get; set; } = false;
-    public bool IsMedicalBook { get; set; } = false;
+    public int Adr { get; init; } = 1;
+
+    /// <summary>
+    /// Флаг возможности сцепки
+    /// </summary>
+    public bool IsHitch { get; init; }
+
+    /// <summary>
+    /// Флаг пневматического транспортного средства
+    /// </summary>
+    public bool IsPneumaticVehicle { get; init; }
+
+    /// <summary>
+    /// Флаг наличия стоек
+    /// </summary>
+    public bool IsStakes { get; init; }
+
+    /// <summary>
+    /// Флаг наличия TIR (международная перевозка)
+    /// </summary>
+    public bool IsTir { get; init; }
+
+    /// <summary>
+    /// Флаг наличия T1 (транзитная декларация)
+    /// </summary>
+    public bool IsT1 { get; init; }
+
+    /// <summary>
+    /// Флаг наличия CMR (международная транспортная накладная)
+    /// </summary>
+    public bool IsCmr { get; init; }
+
+    /// <summary>
+    /// Флаг наличия медицинской книжки
+    /// </summary>
+    public bool IsMedicalBook { get; init; }
 }
+
 #endregion

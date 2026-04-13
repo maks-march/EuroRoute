@@ -4,6 +4,12 @@ namespace Application.CQRS.UserCQ.Commands.Create;
 
 public record CreateUserCommand : IRequest<Guid>
 {
-    public required string Name { get; set; }
-    public required string Surname { get; set; }
+    /// <summary>
+    /// Имя пользователя (часть nickname)
+    /// </summary>
+    public required string Name { get; init; }
+    /// <summary>
+    /// Фамилия пользователя (часть nickname)
+    /// </summary>
+    public required string Surname { get; init; }
 }

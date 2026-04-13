@@ -1,3 +1,4 @@
+using Application.Common.Exceptions;
 using Application.DTO.Auth;
 using Application.Interfaces.Auth;
 using MediatR;
@@ -16,7 +17,7 @@ public class LoginCommandHandler(
         // 1. Проверяем пароль и получаем DTO пользователя
         var (succeeded, userDto) = await identityService.CheckPasswordAsync(request.Login, request.Password);
         if (userDto == null)
-            throw new UnauthorizedAccessException("User not found.");
+            throw new NotFoundException("User not found.", request.Login);
         
         if (!succeeded)
             throw new UnauthorizedAccessException("Invalid login or password.");

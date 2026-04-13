@@ -1,3 +1,4 @@
+using System.Reflection;
 using Application.Common.Mappings;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi;
@@ -17,10 +18,27 @@ public static class DependencyInjection
 
     private static IServiceCollection AddConfiguredSwaggerGen(this IServiceCollection services)
     {
-        services.AddSwaggerGen(c =>
+        services.AddSwaggerGen(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "EuroRoute API",
+                Description = "API для управления логистикой и грузоперевозками. " +
+                              "Позволяет регистрировать пользователей, создавать заказы и управлять транспортными средствами.",
+                TermsOfService = new Uri("https://example.com/terms"), // Ссылка на условия использования
+                Contact = new OpenApiContact
+                {
+                    Name = "Support Team",
+                    Email = "support@euroroute.com"
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "Use under MIT License",
+                    Url = new Uri("https://example.com/license")
+                }
+            });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
                 Type = SecuritySchemeType.Http,
@@ -29,7 +47,7 @@ public static class DependencyInjection
                 In = ParameterLocation.Header,
                 Description = "Enter JWT token like: Bearer {token}"
             });
-            c.AddSecurityRequirement(document =>
+            options.AddSecurityRequirement(document =>
             {
                 OpenApiSecuritySchemeReference? schemeRef = new("Bearer", document);
                 OpenApiSecurityRequirement? requirement = new()
@@ -38,6 +56,18 @@ public static class DependencyInjection
                 };
                 return requirement;
             });
+            // Получаем путь к XML-файлу, сгенерированному для WebApi
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+    
+            // (Опционально) Если твои DTO и команды с комментариями лежат в Application
+            var appXmlFile = "Application.xml"; // Имя файла должно совпадать с именем сборки
+            var appXmlPath = Path.Combine(AppContext.BaseDirectory, appXmlFile);
+            if (File.Exists(appXmlPath))
+            {
+                options.IncludeXmlComments(appXmlPath);
+            }
         });
         return services;
     }

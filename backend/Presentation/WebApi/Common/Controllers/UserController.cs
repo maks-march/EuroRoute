@@ -8,16 +8,30 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.DTO;
 using WebApi.DTO.User;
 
 namespace WebApi.Common.Controllers;
 
-
+/// <summary>
+/// Контроллер для управления CRUD-операциями над пользователями (POST только для админов).
+/// </summary>
 [Authorize]
 public class UserController(IMediator mediator, IMapper mapper) 
     : BaseController(mediator, mapper)
 {
+    /// <summary>
+    /// Получает информацию о пользователе по его ID.
+    /// </summary>
+    /// <param name="id">Уникальный идентификатор пользователя.</param>
+    /// <returns>DTO пользователя.</returns>
+    /// <response code="200">Пользователь найден.</response>
+    /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
+    /// <response code="404">Пользователь с таким ID не найден.</response>
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(UserDetailsVm), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDetailsVm>> Get(Guid id)
     {
         var query = new GetUserDetailsQuery()
@@ -28,12 +42,33 @@ public class UserController(IMediator mediator, IMapper mapper)
         return Ok(vm);
     }
     
+    /// <summary>
+    /// Получает информацию о пользователе по его ID.
+    /// </summary>
+    /// <returns>DTO пользователя.</returns>
+    /// <response code="200">Пользователь найден.</response>
+    /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
+    /// <response code="404">Пользователь с текущей сессией не найден.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(UserDetailsVm), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDetailsVm>> GetMe()
     {
         return await Get(UserId);
     }
     
+    /// <summary>
+    /// Получает информацию о пользователях.
+    /// </summary>
+    /// <returns>DTO пользователей.</returns>
+    /// <response code="200">Пользователи найдены.</response>
+    /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
+    /// <response code="404">Пользователи не найдены.</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(UserListVm), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
     public async Task<ActionResult<UserListVm>> Get()
     {
@@ -42,6 +77,9 @@ public class UserController(IMediator mediator, IMapper mapper)
         return Ok(vm);
     }
 
+    /// <summary>
+    /// Создает нового пользователя (только для админов).
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Guid>> Post([FromBody] CreateUserCommand command)
@@ -50,6 +88,9 @@ public class UserController(IMediator mediator, IMapper mapper)
         return Ok(id);
     }
     
+    /// <summary>
+    /// Удаляет пользователя (только для админов).
+    /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UserDetailsVm>> Delete(Guid id)
@@ -62,7 +103,20 @@ public class UserController(IMediator mediator, IMapper mapper)
         return NoContent();
     }
     
+    /// <summary>
+    /// Обновляет информацию о пользователе по его ID.
+    /// </summary>
+    /// <param name="body">Данные для обновления пользователя.</param>
+    /// <returns>Id пользователя.</returns>
+    /// <response code="200">Пользователь обновлен.</response>
+    /// <response code="400">Некорректный запрос, или невалидные данные.</response>
+    /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
+    /// <response code="404">Пользователь с текущей сессией не найден.</response>
     [HttpPatch]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Guid>> UpdateMe([FromBody]UpdateUserDto body)
     {
         var command = Mapper.Map<UpdateUserCommand>(body);
