@@ -1,3 +1,4 @@
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
@@ -11,7 +12,17 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .WithMessage("Start date is required.")
             .GreaterThan(DateTime.UtcNow)
             .WithMessage("Start date must be in the future.");
+        
+        RuleFor(x => x.Status)
+            .MaximumLength(20)
+            .WithMessage("Status must be 20 characters or fewer.")
+            .Must(x => Enum.IsDefined(typeof(OrderStatus), x))
+            .WithMessage("Status must be one of the following.");
 
+        RuleFor(x => x.SpecNumber)
+            .InclusiveBetween(100, 100000)
+            .WithMessage("SpecNumber must be greater than 100.");
+        
         RuleFor(x => x.UserId)
             .NotEmpty()
             .WithMessage("Author ID is required.");

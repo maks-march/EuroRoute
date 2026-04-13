@@ -24,10 +24,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseCustomExceptionHandler();
-if (app.Environment.IsDevelopment() && false)
-{
-    app.UseDeveloperExceptionPage();
-}
 app.UseStaticAssets(builder.Environment);
 app.UseRouting();
 

@@ -23,7 +23,7 @@ public class RoutePointDtoValidator : AbstractValidator<RoutePointCommandDto>
         // LoadTimeEnd должно быть больше или равно LoadTimeStart
         RuleFor(x => x.LoadTimeEnd)
             .GreaterThanOrEqualTo(x => x.LoadTimeStart)
-            .WithMessage("'Load Time End' must be after or the same as 'Load Time Start'.")
+            .WithMessage("'Load time end' must be after or the same as 'Load time start'.")
             .When(x => x.LoadTimeStart != TimeSpan.Zero && x.LoadTimeEnd != TimeSpan.Zero);
     }
 }

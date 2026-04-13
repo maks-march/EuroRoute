@@ -15,9 +15,13 @@ public class TransportDtoValidator : AbstractValidator<TransportCommandDto>
         RuleFor(x => x.Vehicles)
             .GreaterThan(0).WithMessage("Number of vehicles must be at least 1.");
         
-        RuleForEach(x => new []{x.LoadType, x.UnloadType})
+        RuleFor(x => x.LoadType)
             .ForEach(type => type.MaximumLength(20))
             .WithMessage("Load type must be 20 characters or fewer.");
+        
+        RuleFor(x => x.UnloadType)
+            .ForEach(type => type.MaximumLength(20))
+            .WithMessage("Unload type must be 20 characters or fewer.");
         
         // ADR - класс опасности, обычно от 1 до 9. Убедимся, что он в разумных пределах.
         RuleFor(x => x.Adr)

@@ -16,9 +16,7 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     public string Status { get; set; } = nameof(OrderStatus.Ready);
     public string About { get; set; } = string.Empty;
     
-    public int SpecNumber { get; set; } = 0;
-    
-    public ICollection<string> Photo { get; set; } = [];
+    public int SpecNumber { get; set; } = 100;
     public PaymentCommandDto Payment { get; set; } = new();
     public TransportCommandDto Transport { get; set; } = new();
     public ICollection<PayloadCommandDto> Payloads { get; set; } = [];
@@ -30,6 +28,7 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Created, opt => opt.Ignore())
             .ForMember(dest => dest.Updated, opt => opt.Ignore())
+            .ForMember(dest => dest.Photo, opt => opt.Ignore())
             .ForMember(dest => 
                 dest.Status,opt =>
                 opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status)))

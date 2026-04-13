@@ -51,7 +51,11 @@ public class CustomExceptionHandler(RequestDelegate next)
                 error = invalidOperationException.Message;
                 details = invalidOperationException.InnerException?.Message ?? "Invalid operation.";
                 break;
-                
+            case OperationCanceledException operationCanceledException:
+                code = HttpStatusCode.RequestTimeout;
+                error = operationCanceledException.Message;
+                details = operationCanceledException.InnerException?.Message ?? "Operation timed out.";
+                break;
         }
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;
