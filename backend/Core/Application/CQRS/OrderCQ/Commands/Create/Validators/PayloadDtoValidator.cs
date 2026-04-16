@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 
-public class PayloadDtoValidator : AbstractValidator<PayloadCommandDto>
+public class PayloadDtoValidator : AbstractValidator<PayloadCreateCommandDto>
 {
     public PayloadDtoValidator()
     {

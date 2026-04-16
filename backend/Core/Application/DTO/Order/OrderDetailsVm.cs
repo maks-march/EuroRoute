@@ -7,7 +7,6 @@ namespace Application.DTO.Order;
 
 public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.Order>
 {
-    
     public Guid Id { get; init; }
     public DateTime Created { get; init; }
     public DateTime Updated { get; init; }
@@ -34,18 +33,18 @@ public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.
                 opt.MapFrom(src => src.RoutePoints));
             
         // Также нам нужны маппинги для самих DTO в их доменные аналоги
-        profile.CreateMap<Payment, PaymentCommandDto>()
+        profile.CreateMap<Payment, PaymentCreateCommandDto>()
                .ForMember(dest => 
                    dest.PaymentType,opt => 
                    opt.MapFrom(src => src.PaymentType.ToString()));
         
-        profile.CreateMap<Transport, TransportCommandDto>();
+        profile.CreateMap<Transport, TransportCreateCommandDto>();
 
-       profile.CreateMap<Payload, PayloadCommandDto>()
+       profile.CreateMap<Payload, PayloadCreateCommandDto>()
            .ForMember(dest => 
                dest.Wrap,opt => 
                opt.MapFrom(src => src.Wrap.ToString()));
 
-       profile.CreateMap<RoutePoints, RoutePointCommandDto>();
+       profile.CreateMap<RoutePoints, RoutePointCreateCommandDto>();
     }
 }

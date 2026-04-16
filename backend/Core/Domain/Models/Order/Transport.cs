@@ -2,9 +2,9 @@ namespace Domain.Models.Order;
 
 public class Transport : OrderField
 {
-    public required ICollection<string> BodyType {get; set;}
-    public ICollection<string> LoadType {get; set;} = [];
-    public ICollection<string> UnloadType {get; set;} = [];
+    public required IList<string> BodyType {get; set;}
+    public IList<string> LoadType {get; set;} = [];
+    public IList<string> UnloadType {get; set;} = [];
     
     public int Vehicles = 1;
     public int? TemperatureFrom { get; set; } = null;

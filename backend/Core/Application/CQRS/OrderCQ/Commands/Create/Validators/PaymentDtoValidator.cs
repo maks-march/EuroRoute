@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 
-public class PaymentDtoValidator : AbstractValidator<PaymentCommandDto>
+public class PaymentDtoValidator : AbstractValidator<PaymentCreateCommandDto>
 {
     public PaymentDtoValidator()
     {

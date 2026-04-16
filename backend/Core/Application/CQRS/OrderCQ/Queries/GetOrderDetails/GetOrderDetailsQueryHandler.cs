@@ -16,8 +16,10 @@ public class GetOrderDetailsQueryHandler(
         var order = await dbContext.Orders
             .Include(order => order.Payment)
             .Include(order => order.Transport)
-            .Include(order => order.Payloads)
-            .Include(order => order.RoutePoints)
+            .Include(order => order.Payloads
+                .OrderBy(p => p.OrderIndex))
+            .Include(order => order.RoutePoints
+                .OrderBy(r => r.OrderIndex))
             .AsNoTracking()
             .FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
         if (order == null || order.Id != request.Id)

@@ -41,22 +41,22 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Информация об оплате
     /// </summary>
-    public PaymentCommandDto Payment { get; init; } = new();
+    public PaymentCreateCommandDto Payment { get; init; } = new();
 
     /// <summary>
     /// Информация о транспорте
     /// </summary>
-    public TransportCommandDto Transport { get; init; } = new();
+    public TransportCreateCommandDto Transport { get; init; } = new();
 
     /// <summary>
     /// Коллекция грузов
     /// </summary>
-    public ICollection<PayloadCommandDto> Payloads { get; init; } = [];
+    public IList<PayloadCreateCommandDto> Payloads { get; init; } = [];
 
     /// <summary>
     /// Коллекция точек маршрута
     /// </summary>
-    public ICollection<RoutePointCommandDto> RoutePoints { get; init; } = [];
+    public IList<RoutePointCreateCommandDto> RoutePoints { get; init; } = [];
 
     /// <summary>
     /// Настройка маппинга команды в доменную модель заказа
@@ -89,27 +89,29 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
                 opt.MapFrom(src => src.RoutePoints));
             
         // Также нам нужны маппинги для самих DTO в их доменные аналоги
-        profile.CreateMap<PaymentCommandDto, Payment>()
+        profile.CreateMap<PaymentCreateCommandDto, Payment>()
                .ForMember(dest => dest.Id, opt => opt.Ignore())
                .ForMember(dest => dest.OrderId, opt => opt.Ignore())
                .ForMember(dest => 
                    dest.PaymentType,opt => 
                    opt.MapFrom(src => Enum.Parse<PaymentType>(src.PaymentType)));
         
-        profile.CreateMap<TransportCommandDto, Transport>()
+        profile.CreateMap<TransportCreateCommandDto, Transport>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
 
-       profile.CreateMap<PayloadCommandDto, Payload>()
+       profile.CreateMap<PayloadCreateCommandDto, Payload>()
            .ForMember(dest => dest.Id, opt => opt.Ignore())
+           .ForMember(dest => dest.OrderIndex, opt => opt.Ignore())
            .ForMember(dest => 
                dest.OrderId, opt => opt.Ignore())
            .ForMember(dest => 
                dest.Wrap,opt => 
                opt.MapFrom(src => Enum.Parse<Wrap>(src.Wrap)));
 
-        profile.CreateMap<RoutePointCommandDto, RoutePoints>()
+        profile.CreateMap<RoutePointCreateCommandDto, RoutePoints>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.OrderIndex, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
     }
 }
@@ -119,7 +121,7 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
 /// <summary>
 /// DTO с информацией об оплате
 /// </summary>
-public record PaymentCommandDto
+public record PaymentCreateCommandDto
 {
     /// <summary>
     /// Тип оплаты
@@ -181,7 +183,7 @@ public record PaymentCommandDto
 /// <summary>
 /// DTO с информацией о грузе
 /// </summary>
-public record PayloadCommandDto
+public record PayloadCreateCommandDto
 {
     /// <summary>
     /// Наименование груза
@@ -191,12 +193,14 @@ public record PayloadCommandDto
     /// <summary>
     /// Вес груза
     /// </summary>
-    [DefaultValue(1)] public double Weight { get; init; } = 1;
+    [DefaultValue(1)]
+    public double Weight { get; init; } = 1;
 
     /// <summary>
     /// Объем груза
     /// </summary>
-    [DefaultValue(1)] public double Volume { get; init; } = 1;
+    [DefaultValue(1)]
+    public double Volume { get; init; } = 1;
     
     /// <summary>
     /// Количество грузовых мест
@@ -214,7 +218,7 @@ public record PayloadCommandDto
 /// <summary>
 /// DTO с информацией о точке маршрута
 /// </summary>
-public record RoutePointCommandDto
+public record RoutePointCreateCommandDto
 {
     /// <summary>
     /// Город точки маршрута
@@ -252,22 +256,22 @@ public record RoutePointCommandDto
 /// <summary>
 /// DTO с информацией о транспорте
 /// </summary>
-public record TransportCommandDto
+public record TransportCreateCommandDto
 {
     /// <summary>
     /// Тип кузова транспортного средства
     /// </summary>
-    public ICollection<string> BodyType { get; init; } = [string.Empty];
+    public IList<string> BodyType { get; init; } = [string.Empty];
 
     /// <summary>
     /// Тип погрузки
     /// </summary>
-    public ICollection<string> LoadType { get; init; } = [];
+    public IList<string> LoadType { get; init; } = [];
 
     /// <summary>
     /// Тип разгрузки
     /// </summary>
-    public ICollection<string> UnloadType { get; init; } = [];
+    public IList<string> UnloadType { get; init; } = [];
     
     /// <summary>
     /// Количество транспортных средств

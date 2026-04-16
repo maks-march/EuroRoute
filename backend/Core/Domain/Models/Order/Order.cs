@@ -9,11 +9,11 @@ public class Order : HasAuthor
     
     public int SpecNumber { get; set; }
     public string About { get; set; } = string.Empty;
-    public ICollection<string> Photo { get; set; } = [];
+    public IList<string> Photo { get; set; } = [];
     
     public required Payment Payment { get; set; }
     public required Transport Transport { get; set; }
 
-    public ICollection<Payload> Payloads { get; set; } = [];
-    public ICollection<RoutePoints> RoutePoints { get; set; } = [];
+    public IList<Payload> Payloads { get; set; } = [];
+    public IList<RoutePoints> RoutePoints { get; set; } = [];
 }

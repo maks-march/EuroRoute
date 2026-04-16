@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 
-public class TransportDtoValidator : AbstractValidator<TransportCommandDto>
+public class TransportDtoValidator : AbstractValidator<TransportCreateCommandDto>
 {
     public TransportDtoValidator()
     {

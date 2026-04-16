@@ -20,19 +20,24 @@ public class CreateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
         order.Payment.OrderId = order.Id;
         order.Transport.Id = Guid.NewGuid();
         order.Transport.OrderId = order.Id;
-        foreach (var payload in order.Payloads)
+        
+        for (var index = 0; index < order.Payloads.Count; index++)
         {
+            var payload = order.Payloads[index];
             payload.Id = Guid.NewGuid();
             payload.OrderId = order.Id;
+            payload.OrderIndex = index;
         }
-        
-        order.RoutePoints.First().IsLoad = true;
-        foreach (var point in order.RoutePoints)
+
+        order.RoutePoints[0].IsLoad = true;
+        for (var index = 0; index < order.RoutePoints.Count; index++)
         {
+            var point = order.RoutePoints[index];
             point.Id = Guid.NewGuid();
             point.OrderId = order.Id;
+            point.OrderIndex = index;
         }
-        
+
         await dbContext.Orders.AddAsync(order, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
         return order.Id;

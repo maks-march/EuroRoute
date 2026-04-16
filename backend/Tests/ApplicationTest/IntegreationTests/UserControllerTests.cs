@@ -1,10 +1,10 @@
 using System.Net;
 using System.Net.Http.Json;
+using Application.CQRS.UserCQ.Commands.Update;
 using Application.DTO.User;
 using ApplicationTest.Common;
 using FluentAssertions;
 using WebApi.DTO;
-using WebApi.DTO.User;
 
 namespace ApplicationTest.IntegreationTests;
 
@@ -76,7 +76,7 @@ public class UserControllerTests : BaseIntegrationTest
     [Test]
     public async Task Update_WithValidCredentials_ShouldBeOk()
     {
-        var request = new UpdateUserDto()
+        var request = new UpdateUserCommand()
         {
             Name = "NewName",
             Surname = "NewSurname"
@@ -90,13 +90,13 @@ public class UserControllerTests : BaseIntegrationTest
         
         getResponse.Name.Should().Be(request.Name);
         getResponse.Surname.Should().Be(request.Surname);
-        getResponse.Updated.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
+        getResponse.Updated.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
     
     [Test]
     public async Task Update_WithInvalidCredentials_ShouldBeBadRequest()
     {
-        var request = new UpdateUserDto()
+        var request = new UpdateUserCommand()
         {
             Name = string.Concat(
                 Enumerable.Repeat("Update_WithInvalidCredentials_ShouldBeBadRequest", 20)

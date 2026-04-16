@@ -9,7 +9,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTO;
-using WebApi.DTO.User;
 
 namespace WebApi.Common.Controllers;
 
@@ -102,11 +101,11 @@ public class UserController(IMediator mediator, IMapper mapper)
         await Mediator.Send(query);
         return NoContent();
     }
-    
+
     /// <summary>
     /// Обновляет информацию о пользователе по его ID.
     /// </summary>
-    /// <param name="body">Данные для обновления пользователя.</param>
+    /// <param name="command">Данные для обновления пользователя.</param>
     /// <returns>Id пользователя.</returns>
     /// <response code="200">Пользователь обновлен.</response>
     /// <response code="400">Некорректный запрос, или невалидные данные.</response>
@@ -117,14 +116,13 @@ public class UserController(IMediator mediator, IMapper mapper)
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Guid>> UpdateMe([FromBody]UpdateUserDto body)
+    public async Task<ActionResult<Guid>> UpdateMe([FromBody]UpdateUserCommand command)
     {
-        var command = Mapper.Map<UpdateUserCommand>(body);
-        command.Id = UserId;
         if (UserId == Guid.Empty)
         {
             return Unauthorized();
         }
+        command.Id = UserId;
         var id = await Mediator.Send(command);
         return Ok(id);
     }

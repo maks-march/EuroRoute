@@ -1,4 +1,5 @@
 using Application.CQRS.OrderCQ.Commands.Create;
+using Application.CQRS.OrderCQ.Commands.Update;
 using Application.CQRS.OrderCQ.Queries.GetOrderDetails;
 using Application.DTO.Order;
 using AutoMapper;
@@ -6,14 +7,15 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTO;
-using WebApi.DTO.Order;
 
 namespace WebApi.Common.Controllers;
 
+/// <summary>
+/// Контроллер по управлению заказами
+/// </summary>
 [Authorize]
 public class OrderController(IMediator mediator, IMapper mapper) : BaseController(mediator, mapper)
 {
-    
     /// <summary>
     /// Получает информацию о заказе по его ID.
     /// </summary>
@@ -33,16 +35,17 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
         var query = new GetOrderDetailsQuery() { Id = id };
         return await Mediator.Send(query);
     }
+    
     /// <summary>
     /// Создает заказ от имени пользователя.
     /// </summary>
     /// <param name="command">DTO создания заказа.</param>
     /// <returns>Id заказа.</returns>
-    /// <response code="200">Заказ найден.</response>
+    /// <response code="200">Заказ создан.</response>
     /// <response code="400">Невалидные данные.</response>
     /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
     [HttpPost]
-    [ProducesResponseType(typeof(OrderDetailsVm), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Guid>> Post([FromBody]CreateOrderCommand command)
@@ -50,16 +53,36 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
         command.UserId = UserId;
         return await Mediator.Send(command);
     }
-    
-    [HttpPut("{id:guid}")]
-    public async Task<ActionResult<Guid>> Update([FromForm]UpdateOrderDto dto)
+
+    /// <summary>
+    /// Создает заказ от имени пользователя.
+    /// </summary>
+    /// <param name="id">Id обновлямого заказа.</param>
+    /// <param name="command">DTO обновления заказа.</param>
+    /// <returns>Id заказа.</returns>
+    /// <response code="200">Заказ обновлен.</response>
+    /// <response code="400">Невалидные данные.</response>
+    /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
+    [HttpPatch("{id:guid}")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<Guid>> Update(Guid id, [FromBody]UpdateOrderCommand command)
     {
-        throw new NotImplementedException();
+        if (UserId == Guid.Empty)
+            return Unauthorized();
+        command.Id = id;
+        command.UserId = UserId;
+        return await Mediator.Send(command);
     }
 
+    /// <summary>
+    /// Удаление заказа.
+    /// </summary>
+    /// <param name="id">Id удаляемого заказа.</param>
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult<Guid>> Delete(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
-        throw new NotImplementedException();
+        return Ok();
     }
 }

@@ -8,7 +8,7 @@ using FluentAssertions;
 
 namespace ApplicationTest.Common;
 
-[TestFixture] // Говорим NUnit, что это класс с тестами
+[TestFixture]
 public abstract class BaseIntegrationTest
 {
     private TestWebApplicationFactory<Program> _factory = null!;
@@ -59,6 +59,13 @@ public abstract class BaseIntegrationTest
         
         response.IsSuccessStatusCode.Should().BeTrue();
         return await response.Content.ReadFromJsonAsync<AuthResponse>();
+    }
+    
+    protected async Task<T?> ExtractFromResponse<T>(HttpResponseMessage response)
+    {
+        response.IsSuccessStatusCode.Should().BeTrue();
+        var result = await response.Content.ReadFromJsonAsync<T>();
+        return result;
     }
     
     [OneTimeTearDown]
