@@ -7,8 +7,16 @@ using WebApi.DTO;
 
 namespace WebApi.Common.Middleware;
 
+/// <summary>
+/// Обработчик исключений - выдает коды ошибок
+/// </summary>
+/// <param name="next"></param>
 public class CustomExceptionHandler(RequestDelegate next)
 {
+    /// <summary>
+    /// Оборачиваем вызов следующего middleware в try-catch
+    /// </summary>
+    /// <param name="context"></param>
     public async Task Invoke(HttpContext context)
     {
         try
@@ -33,8 +41,11 @@ public class CustomExceptionHandler(RequestDelegate next)
                 error = validationException.Message;
                 details = validationException.InnerException?.Message ?? "Validation exception.";
                 break;
-            case NotFoundException notFoundException:
+            case NotFoundException:
                 code = HttpStatusCode.NotFound;
+                break;
+            case ForbiddenException:
+                code = HttpStatusCode.Forbidden;
                 break;
             case DbUpdateException dbUpdateException:
                 code = HttpStatusCode.Conflict;

@@ -1,6 +1,7 @@
 using Domain.Models;
 using Domain.Models.Order;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Application.Interfaces;
 
@@ -10,8 +11,11 @@ public interface IAppDbContext
     DbSet<Truck> Trucks { get; set; }
     DbSet<Order> Orders { get; set; }
     public DbSet<Payload> Payloads { get; set; }
-    public DbSet<RoutePoints> RoutePoints { get; set; }
+    public DbSet<RoutePoint> RoutePoints { get; set; }
     public DbSet<Transport> Transports { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+    public ChangeTracker ChangeTracker { get; }
+    public DbSet<T> Set<T>() where T : OrderCollectionField;
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

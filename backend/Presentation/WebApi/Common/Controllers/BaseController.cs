@@ -5,11 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Common.Controllers;
 
+/// <summary>
+/// Базовая настройка контроллеров
+/// </summary>
+/// <param name="mediator">Медиатор - обрабатывает запросы</param>
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class BaseController(IMediator mediator, IMapper mapper) : ControllerBase
+public class BaseController(IMediator mediator) : ControllerBase
 {
-    protected readonly IMapper Mapper = mapper;
+    /// <summary>
+    /// Модифицируем инъекцию из конструктора, как наследуемое поле только для чтения.
+    /// </summary>
     protected readonly IMediator Mediator = mediator;
     
     internal Guid UserId

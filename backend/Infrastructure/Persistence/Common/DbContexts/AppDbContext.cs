@@ -17,12 +17,19 @@ public class AppDbContext
     public DbSet<Truck> Trucks { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Payload> Payloads { get; set; }
-    public DbSet<RoutePoints> RoutePoints { get; set; }
+    public DbSet<RoutePoint> RoutePoints { get; set; }
     public DbSet<Transport> Transports { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    
+    public new DbSet<T> Set<T>() where T : OrderCollectionField
+    {
+        return Set<T>(nameof(T));
+    }
+
+
     public AppDbContext(DbContextOptions<AppDbContext> options) 
         : base(options) { }
-
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new UserConfiguration());

@@ -6,7 +6,7 @@ public class Transport : OrderField
     public IList<string> LoadType {get; set;} = [];
     public IList<string> UnloadType {get; set;} = [];
     
-    public int Vehicles = 1;
+    public int Vehicles { get; set; } = 1;
     public int? TemperatureFrom { get; set; } = null;
     public int? TemperatureTo { get; set; } = null;
     public bool IsCrewFull { get; set; } = false;

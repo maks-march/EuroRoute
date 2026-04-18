@@ -16,8 +16,8 @@ namespace WebApi.Common.Controllers;
 /// Контроллер для управления CRUD-операциями над пользователями (POST только для админов).
 /// </summary>
 [Authorize]
-public class UserController(IMediator mediator, IMapper mapper) 
-    : BaseController(mediator, mapper)
+public class UserController(IMediator mediator) 
+    : BaseController(mediator)
 {
     /// <summary>
     /// Получает информацию о пользователе по его ID.

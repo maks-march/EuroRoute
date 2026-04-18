@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 
-public class RoutePointDtoValidator : AbstractValidator<RoutePointCreateCommandDto>
+public class RoutePointDtoValidator : AbstractValidator<RoutePointCreateCommand>
 {
     public RoutePointDtoValidator()
     {

@@ -36,27 +36,31 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Номер спецификации
     /// </summary>
+    /// <summary>
+    /// Статус заказа
+    /// </summary>
+    [DefaultValue(100)] 
     public int SpecNumber { get; init; } = 100;
 
     /// <summary>
     /// Информация об оплате
     /// </summary>
-    public PaymentCreateCommandDto Payment { get; init; } = new();
+    public PaymentCreateCommand Payment { get; init; } = new();
 
     /// <summary>
     /// Информация о транспорте
     /// </summary>
-    public TransportCreateCommandDto Transport { get; init; } = new();
+    public TransportCreateCommand Transport { get; init; } = new();
 
     /// <summary>
     /// Коллекция грузов
     /// </summary>
-    public IList<PayloadCreateCommandDto> Payloads { get; init; } = [];
+    public IList<PayloadCreateCommand> Payloads { get; init; } = [];
 
     /// <summary>
     /// Коллекция точек маршрута
     /// </summary>
-    public IList<RoutePointCreateCommandDto> RoutePoints { get; init; } = [];
+    public IList<RoutePointCreateCommand> RoutePoints { get; init; } = [];
 
     /// <summary>
     /// Настройка маппинга команды в доменную модель заказа
@@ -89,18 +93,18 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
                 opt.MapFrom(src => src.RoutePoints));
             
         // Также нам нужны маппинги для самих DTO в их доменные аналоги
-        profile.CreateMap<PaymentCreateCommandDto, Payment>()
+        profile.CreateMap<PaymentCreateCommand, Payment>()
                .ForMember(dest => dest.Id, opt => opt.Ignore())
                .ForMember(dest => dest.OrderId, opt => opt.Ignore())
                .ForMember(dest => 
                    dest.PaymentType,opt => 
                    opt.MapFrom(src => Enum.Parse<PaymentType>(src.PaymentType)));
         
-        profile.CreateMap<TransportCreateCommandDto, Transport>()
+        profile.CreateMap<TransportCreateCommand, Transport>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
 
-       profile.CreateMap<PayloadCreateCommandDto, Payload>()
+       profile.CreateMap<PayloadCreateCommand, Payload>()
            .ForMember(dest => dest.Id, opt => opt.Ignore())
            .ForMember(dest => dest.OrderIndex, opt => opt.Ignore())
            .ForMember(dest => 
@@ -109,7 +113,7 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
                dest.Wrap,opt => 
                opt.MapFrom(src => Enum.Parse<Wrap>(src.Wrap)));
 
-        profile.CreateMap<RoutePointCreateCommandDto, RoutePoints>()
+        profile.CreateMap<RoutePointCreateCommand, RoutePoint>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.OrderIndex, opt => opt.Ignore())
             .ForMember(dest => dest.OrderId, opt => opt.Ignore());
@@ -121,7 +125,7 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
 /// <summary>
 /// DTO с информацией об оплате
 /// </summary>
-public record PaymentCreateCommandDto
+public record PaymentCreateCommand
 {
     /// <summary>
     /// Тип оплаты
@@ -132,17 +136,17 @@ public record PaymentCreateCommandDto
     /// <summary>
     /// Флаг оплаты налогооблагаемой картой
     /// </summary>
-    public bool IsTaxedByCard { get; init; } = true;
+    public bool IsTaxedByCard { get; init; }
 
     /// <summary>
     /// Флаг оплаты не налогооблагаемой картой
     /// </summary>
-    public bool IsNotTaxedByCard { get; init; } = true;
+    public bool IsNotTaxedByCard { get; init; }
 
     /// <summary>
     /// Флаг оплаты наличными
     /// </summary>
-    public bool IsByCash { get; init; } = true;
+    public bool IsByCash { get; init; }
 
     /// <summary>
     /// Сумма оплаты налогооблагаемой картой
@@ -183,7 +187,7 @@ public record PaymentCreateCommandDto
 /// <summary>
 /// DTO с информацией о грузе
 /// </summary>
-public record PayloadCreateCommandDto
+public record PayloadCreateCommand
 {
     /// <summary>
     /// Наименование груза
@@ -218,7 +222,7 @@ public record PayloadCreateCommandDto
 /// <summary>
 /// DTO с информацией о точке маршрута
 /// </summary>
-public record RoutePointCreateCommandDto
+public record RoutePointCreateCommand
 {
     /// <summary>
     /// Город точки маршрута
@@ -256,7 +260,7 @@ public record RoutePointCreateCommandDto
 /// <summary>
 /// DTO с информацией о транспорте
 /// </summary>
-public record TransportCreateCommandDto
+public record TransportCreateCommand
 {
     /// <summary>
     /// Тип кузова транспортного средства

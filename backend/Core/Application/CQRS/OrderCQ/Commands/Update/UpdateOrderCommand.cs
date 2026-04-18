@@ -1,4 +1,3 @@
-using System.Reflection;
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Enums;
@@ -42,22 +41,22 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Информация об оплате
     /// </summary>
-    public PaymentUpdateCommandDto? Payment { get; init; } = null;
+    public PaymentUpdateCommand? Payment { get; init; } = null;
 
     /// <summary>
     /// Информация о транспорте
     /// </summary>
-    public TransportUpdateCommandDto? Transport { get; init; } = null;
+    public TransportUpdateCommand? Transport { get; init; } = null;
 
     /// <summary>
     /// Коллекция грузов
     /// </summary>
-    public IList<PayloadUpdateCommandDto>? Payloads { get; init; } = null;
+    public IList<PayloadUpdateCommand>? Payloads { get; init; } = null;
 
     /// <summary>
     /// Коллекция точек маршрута
     /// </summary>
-    public IList<RoutePointUpdateCommandDto>? RoutePoints { get; init; } = null;
+    public IList<RoutePointUpdateCommand>? RoutePoints { get; init; } = null;
 
     public void Mapping(Profile profile)
     {
@@ -76,17 +75,16 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
                 opt =>
                     opt.Condition(src => src.Payment != null))
             .ForMember(dest =>
-                    dest.StartDate, opt =>
-                    opt.Condition(src => src.StartDate != null))
+                dest.StartDate, opt =>
+                opt.Condition(src => src.StartDate != null))
             .ForMember(dest =>
                     dest.SpecNumber,
                 opt =>
                     opt.Condition(src => src.Payment != null))
             .ForMember(dest =>
-                    dest.Status,
-                opt =>
+                    dest.Status, opt =>
                 {
-                    opt.Condition(src => src.Payment != null);
+                    opt.Condition(src => src.Status != null);
                     opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status!));
                 }
             )
@@ -95,38 +93,48 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
                 opt =>
                     opt.Ignore())
             .ForMember(dest =>
-                dest.Payment,
-            opt =>
-                opt.Condition(src => src.Payment != null))
+                    dest.Payment,
+                opt =>
+                    opt.Ignore())
             .ForMember(dest =>
-                dest.Transport,
-            opt =>
-                opt.Condition(src => src.Transport != null))
+                    dest.Transport,
+                opt =>
+                    opt.Ignore())
             .ForMember(dest =>
-                dest.Payloads,
-            opt =>
-                opt.Condition(src => src.Payloads != null))
+                    dest.Payloads,
+                opt =>
+                    opt.Ignore())
             .ForMember(dest =>
-                dest.RoutePoints,
-            opt =>
-                opt.Condition(src => src.RoutePoints != null));
+                    dest.RoutePoints,
+                opt =>
+                    opt.Ignore());
         
-        profile.CreateMap<PaymentUpdateCommandDto, Payment>()
+        profile.CreateMap<PaymentUpdateCommand, Payment>()
+            .ForMember(dest => dest.PaymentType, opt =>
+            {
+                opt.Condition(src => src.PaymentType != null);
+                opt.MapFrom(src => Enum.Parse<PaymentType>(src.PaymentType!));
+            })
             .ForAllMembers(opts => 
                 opts.Condition((src, dest, srcMember) => 
                     srcMember != null && src != null));
         
-        profile.CreateMap<TransportUpdateCommandDto, Transport>()
+        profile.CreateMap<TransportUpdateCommand, Transport>()
             .ForAllMembers(opts => 
                 opts.Condition((src, dest, srcMember) => 
                     srcMember != null && src != null));
         
-        profile.CreateMap<PayloadUpdateCommandDto, Payload>()
+        profile.CreateMap<PayloadUpdateCommand, Payload>()
+            .ForMember(dest => dest.Wrap, opt =>
+            {
+                opt.Condition(src => src.Wrap != null);
+                opt.MapFrom(src => Enum.Parse<Wrap>(src.Wrap!));
+            })
             .ForAllMembers(opts => 
                 opts.Condition((src, dest, srcMember) => 
                     srcMember != null && src != null));
         
-        profile.CreateMap<RoutePointUpdateCommandDto, RoutePoints>()
+        profile.CreateMap<RoutePointUpdateCommand, RoutePoint>()
             .ForAllMembers(opts => 
                 opts.Condition((src, dest, srcMember) => 
                     srcMember != null && src != null));
@@ -138,7 +146,7 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
 /// <summary>
 /// DTO с информацией об оплате
 /// </summary>
-public record PaymentUpdateCommandDto
+public record PaymentUpdateCommand
 {
     /// <summary>
     /// Тип оплаты
@@ -199,7 +207,7 @@ public record PaymentUpdateCommandDto
 /// <summary>
 /// DTO с информацией о грузе
 /// </summary>
-public record PayloadUpdateCommandDto
+public record PayloadUpdateCommand
 {
     /// <summary>
     /// Наименование груза
@@ -230,7 +238,7 @@ public record PayloadUpdateCommandDto
 /// <summary>
 /// DTO с информацией о точке маршрута
 /// </summary>
-public record RoutePointUpdateCommandDto
+public record RoutePointUpdateCommand
 {
     /// <summary>
     /// Город точки маршрута
@@ -266,7 +274,7 @@ public record RoutePointUpdateCommandDto
 /// <summary>
 /// DTO с информацией о транспорте
 /// </summary>
-public record TransportUpdateCommandDto
+public record TransportUpdateCommand
 {
     /// <summary>
     /// Тип кузова транспортного средства

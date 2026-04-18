@@ -2,8 +2,15 @@ using Persistence.Extensions;
 
 namespace WebApi.Extensions;
 
+/// <summary>
+/// Расширения для app
+/// </summary>
 public static class WebApplicationExtensions
 {
+    /// <summary>
+    /// Применяем миграции к бд
+    /// </summary>
+    /// <param name="app"></param>
     public static WebApplication ApplyMigrations(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
@@ -20,6 +27,10 @@ public static class WebApplicationExtensions
         return app;
     }
 
+    /// <summary>
+    /// Стандартные данные в базе
+    /// </summary>
+    /// <param name="app"></param>
     public static async Task SeedData(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();

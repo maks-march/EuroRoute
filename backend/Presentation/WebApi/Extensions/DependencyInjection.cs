@@ -5,8 +5,15 @@ using Microsoft.OpenApi;
 
 namespace WebApi.Extensions;
 
+/// <summary>
+/// Инъекция зависимостей WebApi
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Инъекция сервисов из WebApi
+    /// </summary>
+    /// <param name="services"></param>
     public static IServiceCollection AddWebApiServices(this IServiceCollection services)
     {
         return services

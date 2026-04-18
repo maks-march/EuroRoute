@@ -1,4 +1,5 @@
 using Application.CQRS.OrderCQ.Commands.Create;
+using Application.CQRS.OrderCQ.Commands.Delete;
 using Application.CQRS.OrderCQ.Commands.Update;
 using Application.CQRS.OrderCQ.Queries.GetOrderDetails;
 using Application.DTO.Order;
@@ -14,7 +15,7 @@ namespace WebApi.Common.Controllers;
 /// Контроллер по управлению заказами
 /// </summary>
 [Authorize]
-public class OrderController(IMediator mediator, IMapper mapper) : BaseController(mediator, mapper)
+public class OrderController(IMediator mediator) : BaseController(mediator)
 {
     /// <summary>
     /// Получает информацию о заказе по его ID.
@@ -33,7 +34,7 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
     public async Task<ActionResult<OrderDetailsVm>> Get(Guid id)
     {
         var query = new GetOrderDetailsQuery() { Id = id };
-        return await Mediator.Send(query);
+        return Ok(await Mediator.Send(query));
     }
     
     /// <summary>
@@ -51,7 +52,7 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
     public async Task<ActionResult<Guid>> Post([FromBody]CreateOrderCommand command)
     {
         command.UserId = UserId;
-        return await Mediator.Send(command);
+        return Ok(await Mediator.Send(command));
     }
 
     /// <summary>
@@ -73,7 +74,7 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
             return Unauthorized();
         command.Id = id;
         command.UserId = UserId;
-        return await Mediator.Send(command);
+        return Ok(await Mediator.Send(command));
     }
 
     /// <summary>
@@ -81,8 +82,14 @@ public class OrderController(IMediator mediator, IMapper mapper) : BaseControlle
     /// </summary>
     /// <param name="id">Id удаляемого заказа.</param>
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> Delete(Guid id)
     {
-        return Ok();
+        var command = new DeleteOrderCommand(id, UserId);
+        await Mediator.Send(command);
+        return NoContent();
     }
 }

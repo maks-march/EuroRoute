@@ -12,8 +12,8 @@ namespace WebApi.Common.Controllers;
 /// <summary>
 /// Контроллер для аутентификации и регистрации пользователей.
 /// </summary>
-public class AuthController(IMediator mediator, IMapper mapper) 
-    : BaseController(mediator, mapper)
+public class AuthController(IMediator mediator) 
+    : BaseController(mediator)
 {
     /// <summary>
     /// Регистрирует нового пользователя в системе.

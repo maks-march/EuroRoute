@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Common.EntityTypeConfigurations.Order;
 
-public class RoutePointsConfiguration : OrderFieldConfiguration<RoutePoints>
+public class RoutePointsConfiguration : OrderFieldConfiguration<RoutePoint>
 {
-    public override void Configure(EntityTypeBuilder<RoutePoints> builder)
+    public override void Configure(EntityTypeBuilder<RoutePoint> builder)
     {
         builder.ToTable("RoutePoints");
         base.Configure(builder);

@@ -33,18 +33,18 @@ public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.
                 opt.MapFrom(src => src.RoutePoints));
             
         // Также нам нужны маппинги для самих DTO в их доменные аналоги
-        profile.CreateMap<Payment, PaymentCreateCommandDto>()
+        profile.CreateMap<Payment, PaymentCreateCommand>()
                .ForMember(dest => 
                    dest.PaymentType,opt => 
                    opt.MapFrom(src => src.PaymentType.ToString()));
         
-        profile.CreateMap<Transport, TransportCreateCommandDto>();
+        profile.CreateMap<Transport, TransportCreateCommand>();
 
-       profile.CreateMap<Payload, PayloadCreateCommandDto>()
+       profile.CreateMap<Payload, PayloadCreateCommand>()
            .ForMember(dest => 
                dest.Wrap,opt => 
                opt.MapFrom(src => src.Wrap.ToString()));
 
-       profile.CreateMap<RoutePoints, RoutePointCreateCommandDto>();
+       profile.CreateMap<RoutePoint, RoutePointCreateCommand>();
     }
 }

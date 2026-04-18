@@ -3,8 +3,16 @@ using Persistence.Common;
 
 namespace WebApi.Extensions;
 
+/// <summary>
+/// Расширения для builder
+/// </summary>
 public static class BuilderConfigurations
 {
+    /// <summary>
+    /// Подключение .env файла
+    /// </summary>
+    /// <param name="configBuilder"></param>
+    /// <param name="configuration"></param>
     public static IConfigurationBuilder AddEnvironment(this IConfigurationBuilder configBuilder, IConfiguration configuration)
     {
         var envPath = configuration.GetSection(EnvKeys.EnvironmentPath).Value;

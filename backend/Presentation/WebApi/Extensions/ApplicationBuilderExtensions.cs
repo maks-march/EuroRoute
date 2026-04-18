@@ -3,8 +3,16 @@ using WebApi.Common.Middleware;
 
 namespace WebApi.Extensions;
 
+/// <summary>
+/// Расширения для app builder
+/// </summary>
 public static class ApplicationBuilderExtensions
 {
+    /// <summary>
+    /// Работа с статичными файлами
+    /// </summary>
+    /// <param name="app"></param>
+    /// <param name="environment"></param>
     public static IApplicationBuilder UseStaticAssets(this IApplicationBuilder app, IWebHostEnvironment environment)
     {
         // Убеждаемся, что папка существует (важно при локальном запуске без докера)
@@ -23,6 +31,10 @@ public static class ApplicationBuilderExtensions
         return app;
     }
 
+    /// <summary>
+    /// Добавляем middleware
+    /// </summary>
+    /// <param name="app"></param>
     public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder app)
     {
         app.UseMiddleware<CustomExceptionHandler>();

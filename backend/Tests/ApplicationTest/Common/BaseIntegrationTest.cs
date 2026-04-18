@@ -61,7 +61,7 @@ public abstract class BaseIntegrationTest
         return await response.Content.ReadFromJsonAsync<AuthResponse>();
     }
     
-    protected async Task<T?> ExtractFromResponse<T>(HttpResponseMessage response)
+    protected static async Task<T?> ExtractFromResponse<T>(HttpResponseMessage response)
     {
         response.IsSuccessStatusCode.Should().BeTrue();
         var result = await response.Content.ReadFromJsonAsync<T>();
