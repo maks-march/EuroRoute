@@ -2,8 +2,8 @@ using Application.CQRS.OrderCQ.Commands.Create;
 using Application.CQRS.OrderCQ.Commands.Delete;
 using Application.CQRS.OrderCQ.Commands.Update;
 using Application.CQRS.OrderCQ.Queries.GetOrderDetails;
+using Application.CQRS.OrderCQ.Queries.GetOrdersList;
 using Application.DTO.Order;
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +34,21 @@ public class OrderController(IMediator mediator) : BaseController(mediator)
     public async Task<ActionResult<OrderDetailsVm>> Get(Guid id)
     {
         var query = new GetOrderDetailsQuery() { Id = id };
+        return Ok(await Mediator.Send(query));
+    }
+    
+    /// <summary>
+    /// Получает список отфильтрованных и отсортированных заказов
+    /// </summary>
+    /// <param name="query">Может содержать фильтры или параметр сортировки.</param>
+    /// <returns>Список урезанных дто заказа</returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(OrderDetailsVm), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<OrderListVm[]>> Get([FromQuery] GetOrderListQuery query)
+    {
         return Ok(await Mediator.Send(query));
     }
     

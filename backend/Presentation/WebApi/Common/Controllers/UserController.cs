@@ -4,7 +4,6 @@ using Application.CQRS.UserCQ.Commands.Update;
 using Application.CQRS.UserCQ.Queries.GetUserDetails;
 using Application.CQRS.UserCQ.Queries.GetUserList;
 using Application.DTO.User;
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

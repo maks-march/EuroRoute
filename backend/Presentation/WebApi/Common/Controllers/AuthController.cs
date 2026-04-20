@@ -2,7 +2,6 @@ using Application.CQRS.AuthCQ.Login;
 using Application.CQRS.AuthCQ.Refresh;
 using Application.CQRS.AuthCQ.Register;
 using Application.DTO.Auth;
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTO;

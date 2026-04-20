@@ -69,7 +69,7 @@ public static class DependencyInjection
             options.IncludeXmlComments(xmlPath);
     
             // (Опционально) Если твои DTO и команды с комментариями лежат в Application
-            var appXmlFile = "Application.xml"; // Имя файла должно совпадать с именем сборки
+            var appXmlFile = "Application.xml";
             var appXmlPath = Path.Combine(AppContext.BaseDirectory, appXmlFile);
             if (File.Exists(appXmlPath))
             {

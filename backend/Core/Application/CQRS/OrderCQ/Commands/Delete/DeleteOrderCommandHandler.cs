@@ -1,7 +1,5 @@
 using Application.Common.Exceptions;
-using Application.CQRS.OrderCQ.Commands.Update;
 using Application.Interfaces;
-using AutoMapper;
 using Domain.Models.Order;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
