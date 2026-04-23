@@ -26,6 +26,7 @@ public class UserController(IMediator mediator)
     /// <response code="200">Пользователь найден.</response>
     /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
     /// <response code="404">Пользователь с таким ID не найден.</response>
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(UserDetailsVm), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -47,7 +48,7 @@ public class UserController(IMediator mediator)
     /// <response code="200">Пользователь найден.</response>
     /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
     /// <response code="404">Пользователь с текущей сессией не найден.</response>
-    [HttpGet]
+    [HttpGet("me")]
     [ProducesResponseType(typeof(UserDetailsVm), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -67,7 +68,6 @@ public class UserController(IMediator mediator)
     [ProducesResponseType(typeof(UserListVm), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [HttpGet]
     public async Task<ActionResult<UserListVm>> Get()
     {
         var query = new GetUserListQuery();
@@ -110,7 +110,7 @@ public class UserController(IMediator mediator)
     /// <response code="400">Некорректный запрос, или невалидные данные.</response>
     /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
     /// <response code="404">Пользователь с текущей сессией не найден.</response>
-    [HttpPatch]
+    [HttpPatch("me")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]

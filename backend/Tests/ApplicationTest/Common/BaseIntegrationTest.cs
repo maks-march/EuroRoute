@@ -5,6 +5,7 @@ using Application.CQRS.AuthCQ.Refresh;
 using Application.CQRS.AuthCQ.Register;
 using Application.DTO.Auth;
 using FluentAssertions;
+using WebApi.DTO;
 
 namespace ApplicationTest.Common;
 
@@ -63,6 +64,8 @@ public abstract class BaseIntegrationTest
     
     protected static async Task<T?> ExtractFromResponse<T>(HttpResponseMessage response)
     {
+        if (!response.IsSuccessStatusCode)
+            Console.WriteLine(await response.Content.ReadFromJsonAsync<ErrorResponse>());
         response.IsSuccessStatusCode.Should().BeTrue();
         var result = await response.Content.ReadFromJsonAsync<T>();
         return result;

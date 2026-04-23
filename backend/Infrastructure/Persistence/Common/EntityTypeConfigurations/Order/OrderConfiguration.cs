@@ -33,14 +33,15 @@ public class OrderConfiguration : IEntityTypeConfiguration<Domain.Models.Order.O
             .WithOne(p => p.Order)
             .HasForeignKey(p => p.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
-               
+
         builder.HasMany(o => o.RoutePoints)
             .WithOne(p => p.Order)
             .HasForeignKey(rp => rp.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
-               
-        // Настройка для массивов строк
-        builder.Property(o => o.Photo)
-            .HasColumnType("text[]");
+        
+        builder.HasMany(o => o.Photo)
+            .WithOne(f => (Domain.Models.Order.Order)f.Parent)
+            .HasForeignKey(rp => rp.ItemId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

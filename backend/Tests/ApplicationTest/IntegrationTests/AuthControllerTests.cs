@@ -5,7 +5,7 @@ using Application.DTO.Auth;
 using ApplicationTest.Common;
 using FluentAssertions;
 
-namespace ApplicationTest.IntegreationTests;
+namespace ApplicationTest.IntegrationTests;
 
 public class AuthControllerTests : BaseIntegrationTest
 {

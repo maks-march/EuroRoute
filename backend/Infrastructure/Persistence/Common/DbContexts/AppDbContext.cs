@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Common.EntityTypeConfigurations;
 using Persistence.Common.EntityTypeConfigurations.Order;
+using File = Domain.Models.File;
 
 namespace Persistence.Common.DbContexts;
 
@@ -20,7 +21,8 @@ public class AppDbContext
     public DbSet<RoutePoint> RoutePoints { get; set; }
     public DbSet<Transport> Transports { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    
+    public DbSet<File> Files { get; set; }
+
     public new DbSet<T> Set<T>() where T : OrderCollectionField
     {
         return Set<T>(nameof(T));
@@ -39,6 +41,7 @@ public class AppDbContext
         builder.ApplyConfiguration(new RoutePointsConfiguration());
         builder.ApplyConfiguration(new TransportConfiguration());
         builder.ApplyConfiguration(new PaymentConfiguration());
+        builder.ApplyConfiguration(new FileConfiguration());
         
         base.OnModelCreating(builder);
     }

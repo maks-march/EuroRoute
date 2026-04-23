@@ -26,6 +26,7 @@ public class OrderController(IMediator mediator) : BaseController(mediator)
     /// <response code="400">Невалидные данные.</response>
     /// <response code="401">Не авторизован (токен отсутствует или невалиден).</response>
     /// <response code="404">Заказ с таким ID не найден.</response>
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrderDetailsVm), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -42,6 +43,7 @@ public class OrderController(IMediator mediator) : BaseController(mediator)
     /// </summary>
     /// <param name="query">Может содержать фильтры или параметр сортировки.</param>
     /// <returns>Список урезанных дто заказа</returns>
+    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType(typeof(OrderDetailsVm), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -51,7 +53,7 @@ public class OrderController(IMediator mediator) : BaseController(mediator)
     {
         return Ok(await Mediator.Send(query));
     }
-    
+
     /// <summary>
     /// Создает заказ от имени пользователя.
     /// </summary>

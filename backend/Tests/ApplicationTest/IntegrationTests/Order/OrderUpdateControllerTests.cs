@@ -6,22 +6,23 @@ using ApplicationTest.Extensions;
 using Domain.Enums;
 using FluentAssertions;
 using WebApi.DTO;
+using WebApi.Extensions;
 
-namespace ApplicationTest.IntegreationTests.Order;
+namespace ApplicationTest.IntegrationTests.Order;
 
-public class OrderUpdateControllerTests : OrderTestMethods
+public class OrderUpdateControllerTests : OrderTest
 {
     private async Task<(OrderDetailsVm order, OrderDetailsVm updated)> PrepareVm(UpdateOrderCommand command)
     {
         var id = await PostValidOrder();
         
-        var orderResponse = await _client.GetAsync($"/api/Order/Get/{id}");
+        var orderResponse = await _client.GetAsync($"{BaseUrl}/{id}");
         var orderVm = await ExtractFromResponse<OrderDetailsVm>(orderResponse);
 
-        var updateResponse = await _client.PatchAsJsonAsync($"/api/Order/Update/{id}", command);
+        var updateResponse = await _client.PatchAsJsonAsync($"{BaseUrl}/{id}", command);
         var updateId = await ExtractFromResponse<Guid>(updateResponse);
         
-        var updatedResponse = await _client.GetAsync($"/api/Order/Get/{updateId}");
+        var updatedResponse = await _client.GetAsync($"{BaseUrl}/{updateId}");
         var updatedVm = await ExtractFromResponse<OrderDetailsVm>(updatedResponse);
         
         orderVm.Should().NotBeNull();
@@ -45,7 +46,7 @@ public class OrderUpdateControllerTests : OrderTestMethods
         var str = "Update_ShouldBeOk";
         var (orderVm, updatedVm) = await PrepareVm(new UpdateOrderCommand
         {
-            StartDate = DateTime.Today.AddDays(1),
+            StartDate = DateTime.Now.AddDays(2).ToDateOnly(),
             Status = nameof(OrderStatus.NoCargo),
             About = str,
             SpecNumber = 1000,
@@ -106,7 +107,7 @@ public class OrderUpdateControllerTests : OrderTestMethods
                     Address = str,
                     LoadTimeStart = TimeSpan.MinValue,
                     LoadTimeEnd = TimeSpan.MaxValue,
-                    Date = DateTime.Today.AddDays(2),
+                    Date = DateTime.Today.AddDays(2).ToDateOnly(),
                     IsLoad = true
                 },
                 new RoutePointUpdateCommand
@@ -115,7 +116,7 @@ public class OrderUpdateControllerTests : OrderTestMethods
                     Address = str,
                     LoadTimeStart = TimeSpan.MinValue,
                     LoadTimeEnd = TimeSpan.MaxValue,
-                    Date = DateTime.Today.AddDays(3),
+                    Date = DateTime.Today.AddDays(3).ToDateOnly(),
                     IsLoad = false
                 },
                 new RoutePointUpdateCommand
@@ -124,7 +125,7 @@ public class OrderUpdateControllerTests : OrderTestMethods
                     Address = str,
                     LoadTimeStart = TimeSpan.MinValue,
                     LoadTimeEnd = TimeSpan.MaxValue,
-                    Date = DateTime.Today.AddDays(4),
+                    Date = DateTime.Today.AddDays(4).ToDateOnly(),
                     IsLoad = false
                 },
             ]
@@ -141,7 +142,7 @@ public class OrderUpdateControllerTests : OrderTestMethods
         var command = new UpdateOrderCommand()
         {
             UserId = Guid.Empty,
-            StartDate = DateTime.Today.AddDays(-1),
+            StartDate = DateTime.Now.AddDays(-1).ToDateOnly(),
             Status = tooBigString,
             About = tooBigString,
             SpecNumber = -1,
@@ -180,12 +181,12 @@ public class OrderUpdateControllerTests : OrderTestMethods
                     Address = tooBigString,
                     LoadTimeStart = TimeSpan.MaxValue,
                     LoadTimeEnd = TimeSpan.MinValue,
-                    Date = DateTime.Today.AddDays(-1),
+                    Date = DateTime.Today.AddDays(-1).ToDateOnly(),
                     IsLoad = false
                 }, new RoutePointUpdateCommand()
             ]
         };
-        var updateResponse = await _client.PatchAsJsonAsync($"/api/Order/Update/{id}", command);
+        var updateResponse = await _client.PatchAsJsonAsync($"{BaseUrl}/{id}", command);
         
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         

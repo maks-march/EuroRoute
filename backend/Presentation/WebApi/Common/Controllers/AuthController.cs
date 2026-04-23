@@ -25,7 +25,7 @@ public class AuthController(IMediator mediator)
     /// <returns>Возвращает токены и информацию о пользователе.</returns>
     /// <response code="200">Успешная регистрация.</response>
     /// <response code="400">Ошибка валидации или неверные данные.</response>
-    [HttpPost]
+    [HttpPost("register")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterCommand command)
@@ -43,7 +43,7 @@ public class AuthController(IMediator mediator)
     /// <response code="400">Ошибка валидации или неверные данные.</response>
     /// <response code="401">Неверный логин или пароль.</response>
     /// <response code="404">Пользователь с таким логином не найден.</response>
-    [HttpPost]
+    [HttpPost("login")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -61,7 +61,7 @@ public class AuthController(IMediator mediator)
     /// <returns>Возвращает Access и Refresh токены.</returns>
     /// <response code="200">Успешное обновление токенов.</response>
     /// <response code="401">Неверная пара токенов.</response>
-    [HttpPost]
+    [HttpPost("refresh")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Refresh([FromBody] RefreshCommand command)

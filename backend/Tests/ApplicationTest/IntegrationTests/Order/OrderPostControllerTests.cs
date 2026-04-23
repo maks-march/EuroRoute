@@ -6,10 +6,10 @@ using ApplicationTest.Extensions;
 using FluentAssertions;
 using WebApi.DTO;
 
-namespace ApplicationTest.IntegreationTests.Order;
+namespace ApplicationTest.IntegrationTests.Order;
 
 [TestFixture]
-public class OrderControllerTests : OrderTestMethods
+public class OrderPostControllerTests : OrderTest
 {
     [Test]
     public void Post_WithValidCredentials_ShouldBeOk()
@@ -24,7 +24,7 @@ public class OrderControllerTests : OrderTestMethods
         var command = new CreateOrderCommand
         {
             UserId = Guid.Empty,
-            StartDate = DateTime.Today.AddDays(-1),
+            StartDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)),
             Status = tooBigString,
             About = tooBigString,
             SpecNumber = -1,
@@ -63,7 +63,7 @@ public class OrderControllerTests : OrderTestMethods
                     Address = tooBigString,
                     LoadTimeStart = TimeSpan.MaxValue,
                     LoadTimeEnd = TimeSpan.MinValue,
-                    Date = DateTime.Today.AddDays(-1),
+                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)),
                     IsLoad = false
                 }, new RoutePointCreateCommand()
             ]
@@ -81,39 +81,19 @@ public class OrderControllerTests : OrderTestMethods
             TransportCreateCommand, 
             RoutePointCreateCommand>(error).Should().BeTrue();
     }
-
-    [Test]
-    public async Task Get_WithValidCredentials_ShouldBeOk()
-    {
-        var id = await PostValidOrder();
-        var response = await _client.GetAsync($"/api/Order/Get/{id}");
-        
-        var vm = await ExtractFromResponse<OrderDetailsVm>(response);
-        
-        vm.Should().NotBeNull();
-        vm.CheckFields().Should().BeTrue();
-    }
-
-    [Test]
-    public async Task Get_WithInvalidCredentials_ShouldBeNotFound()
-    {
-        var response = await _client.GetAsync($"/api/Order/Get/{Guid.NewGuid()}");
-        
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
     
     [Test]
     public async Task Delete_WithValidCredentials_ShouldBeOk()
     {
         var id = await PostValidOrder();
-        var response = await _client.DeleteAsync($"/api/Order/Delete/{id}");
+        var response = await _client.DeleteAsync($"{BaseUrl}/{id}");
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
     [Test]
     public async Task Delete_WithInvalidCredentials_ShouldBeNotFound()
     {
-        var response = await _client.DeleteAsync($"/api/Order/Delete/{Guid.NewGuid()}");
+        var response = await _client.DeleteAsync($"{BaseUrl}{Guid.NewGuid()}");
         
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }

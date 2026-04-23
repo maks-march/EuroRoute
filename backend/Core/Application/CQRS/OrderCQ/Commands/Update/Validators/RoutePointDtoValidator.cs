@@ -1,4 +1,5 @@
 using FluentValidation;
+using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Update.Validators;
 
@@ -15,7 +16,7 @@ public class RoutePointDtoValidator : AbstractValidator<RoutePointUpdateCommand>
             .WithMessage("Address cannot exceed 100 characters.");
 
         RuleFor(x => x.Date)
-            .GreaterThan(DateTime.UtcNow.AddDays(-1))
+            .GreaterThan(DateTime.UtcNow.AddDays(-1).ToDateOnly())
             .When(x => x.Date != null)
             .WithMessage("Date cannot be in the past.");
 

@@ -1,5 +1,4 @@
 using Application.DTO.Order;
-using Domain.Enums;
 using MediatR;
 
 namespace Application.CQRS.OrderCQ.Queries.GetOrdersList;
@@ -12,25 +11,26 @@ public record GetOrderListQuery : IRequest<IList<OrderListVm>>
     /// <summary>
     /// Фильтр на статус заказа
     /// </summary>
-    public OrderStatus? Status { get; set; }
+    public string? Status { get; init; }
     
     /// <summary>
     /// Город отправки
     /// </summary>
-    public string? StartCity { get; set; }
+    public string? StartCity { get; init; }
     
     /// <summary>
     /// Город адресат
     /// </summary>
-    public string? EndCity { get; set; }
+    public string? EndCity { get; init; }
+    
     /// <summary>
     /// Отправка с этого числа
     /// </summary>
-    public DateTime? MinStartDate { get; set; }
+    public DateOnly? MinStartDate { get; init; }
     /// <summary>
     /// Максимальный вес
     /// </summary>
-    public double? MaxWeight { get; set; }
+    public double? MaxWeight { get; init; }
     /// <summary>
     /// Сортировать по
     /// дате - date
@@ -38,9 +38,9 @@ public record GetOrderListQuery : IRequest<IList<OrderListVm>>
     /// весу - weight
     /// стоимости - cost
     /// </summary>
-    public string? SortBy { get; set; } 
+    public string? SortBy { get; init; } 
     /// <summary>
     /// По возрастанию
     /// </summary>
-    public bool IsAscending { get; set; } = true;
+    public bool IsAscending { get; init; } = true;
 }

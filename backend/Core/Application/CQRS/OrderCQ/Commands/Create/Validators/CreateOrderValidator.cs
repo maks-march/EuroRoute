@@ -1,5 +1,6 @@
 using Domain.Enums;
 using FluentValidation;
+using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 
@@ -10,7 +11,7 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.StartDate)
             .NotEmpty()
             .WithMessage("Start date is required.")
-            .GreaterThan(DateTime.UtcNow)
+            .GreaterThan(DateTime.Now.ToDateOnly())
             .WithMessage("Start date must be in the future.");
         
         RuleFor(x => x.Status)
