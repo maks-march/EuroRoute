@@ -14,6 +14,7 @@ public interface IAppDbContext
     public DbSet<RoutePoint> RoutePoints { get; set; }
     public DbSet<Transport> Transports { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<OrderPhoto> Files { get; set; }
 
     public ChangeTracker ChangeTracker { get; }
     public DbSet<T> Set<T>() where T : OrderCollectionField;

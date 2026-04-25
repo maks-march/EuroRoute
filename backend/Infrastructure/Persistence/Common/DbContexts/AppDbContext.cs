@@ -20,6 +20,7 @@ public class AppDbContext
     public DbSet<RoutePoint> RoutePoints { get; set; }
     public DbSet<Transport> Transports { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<OrderPhoto> Files { get; set; }
     
     public new DbSet<T> Set<T>() where T : OrderCollectionField
     {
@@ -39,6 +40,7 @@ public class AppDbContext
         builder.ApplyConfiguration(new RoutePointsConfiguration());
         builder.ApplyConfiguration(new TransportConfiguration());
         builder.ApplyConfiguration(new PaymentConfiguration());
+        builder.ApplyConfiguration(new FileConfiguration<Order>());
         
         base.OnModelCreating(builder);
     }
