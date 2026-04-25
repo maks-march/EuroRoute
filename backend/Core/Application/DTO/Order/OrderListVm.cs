@@ -8,7 +8,7 @@ public record OrderListVm : IMapWith<Domain.Models.Order.Order>
     public Guid Id { get; set; }
     public int SpecNumber { get; set; }
     public string Status { get; set; }
-    public DateTime StartDate { get; set; }
+    public DateOnly StartDate { get; set; }
     
     public string StartCity { get; set; } = string.Empty;
     public string EndCity { get; set; } = string.Empty;
@@ -28,9 +28,9 @@ public record OrderListVm : IMapWith<Domain.Models.Order.Order>
                 opt.MapFrom(src => nameof(src.Payment.PaymentType)))
             
             .ForMember(dest => dest.StartCity, opt => 
-                opt.MapFrom(src => src.RoutePoints.First().City))
+                opt.MapFrom(src => src.RoutePoints.OrderBy(r => r.OrderIndex).First().City))
             .ForMember(dest => dest.EndCity, opt => 
-                opt.MapFrom(src => src.RoutePoints.Last().City))
+                opt.MapFrom(src => src.RoutePoints.OrderBy(r => r.OrderIndex).Last().City))
             
             .ForMember(dest => dest.TotalVolume, opt => 
                 opt.MapFrom(src => src.Payloads.Select(p => p.Volume).Sum()))

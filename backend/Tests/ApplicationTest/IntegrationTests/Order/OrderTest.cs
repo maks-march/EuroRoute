@@ -4,10 +4,11 @@ using ApplicationTest.Common;
 using FluentAssertions;
 using WebApi.DTO;
 
-namespace ApplicationTest.IntegreationTests.Order;
+namespace ApplicationTest.IntegrationTests.Order;
 
-public abstract class OrderTestMethods : BaseIntegrationTest
+public abstract class OrderTest : BaseIntegrationTest
 {
+    protected const string BaseUrl = "/api/Order";
     protected async Task<Guid> PostValidOrder(CreateOrderCommand? command = null)
     {
         var response = await PostOrder(command);
@@ -22,7 +23,7 @@ public abstract class OrderTestMethods : BaseIntegrationTest
             RoutePoints = [new RoutePointCreateCommand(), new RoutePointCreateCommand()]
         };
         
-        return await _client.PostAsJsonAsync($"/api/Order/Post", createDto);
+        return await _client.PostAsJsonAsync(BaseUrl, createDto);
     }
     protected bool CheckProps<T, TPayload, TPayment, TTransport, TRoutePoint>(ErrorResponse? error)
     {

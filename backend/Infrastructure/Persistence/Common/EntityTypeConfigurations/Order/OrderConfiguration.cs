@@ -34,7 +34,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<OrderModel>
             .WithOne(p => p.Order)
             .HasForeignKey(p => p.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
-               
+
         builder.HasMany(o => o.RoutePoints)
             .WithOne(p => p.Order)
             .HasForeignKey(rp => rp.OrderId)

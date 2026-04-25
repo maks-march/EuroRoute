@@ -3,6 +3,7 @@ using Application.DTO.Order;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Enums;
 using Domain.Models.Order;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,17 +17,27 @@ public class GetOrderListQueryHandler(
     {
         var query = dbContext.Orders.AsNoTracking();
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status) && Enum.TryParse(request.Status, out OrderStatus orderStatus))
         {
-            query = query.Where(o => o.Status == request.Status.Value);
+            query = query.Where(o => o.Status == orderStatus);
         }
         if (!string.IsNullOrWhiteSpace(request.StartCity))
         {
-            query = query.Where(o => o.RoutePoints.OrderBy(rp => rp.OrderIndex).FirstOrDefault().City.Contains(request.StartCity));
+            query = query.Where(o =>
+                o.RoutePoints
+                    .OrderBy(rp => rp.OrderIndex)
+                    .First()
+                    .City
+                    .Contains(request.StartCity));
         }
         if (!string.IsNullOrWhiteSpace(request.EndCity))
         {
-            query = query.Where(o => o.RoutePoints.OrderByDescending(rp => rp.OrderIndex).FirstOrDefault().City.Contains(request.EndCity));
+            query = query.Where(o => 
+                o.RoutePoints
+                    .OrderByDescending(rp => rp.OrderIndex)
+                    .First()
+                    .City
+                    .Contains(request.EndCity));
         }
         if (request.MinStartDate.HasValue)
         {
@@ -46,7 +57,7 @@ public class GetOrderListQueryHandler(
                 Math.Min(o.Payment.NotTaxedByCard, o.Payment.TaxedByCard), 
                 o.Payment.ByCash)
         };
-
+        
         var sortByColumn = request.SortBy?.ToLowerInvariant();
         if (!string.IsNullOrWhiteSpace(sortByColumn) && columnsMap.ContainsKey(sortByColumn))
         {
@@ -59,8 +70,6 @@ public class GetOrderListQueryHandler(
             query = query.OrderByDescending(o => o.Created);
         }
         
-        // ProjectTo - это метод AutoMapper, который преобразует IQueryable<Order> в IQueryable<OrderListItemDto>
-        // и выполняет запрос на стороне SQL, выбирая только нужные поля.
         var result = await query
             .ProjectTo<OrderListVm>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);

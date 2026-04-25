@@ -21,7 +21,7 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Дата начала выполнения заказа
     /// </summary>
-    public DateTime? StartDate { get; init; } = null;
+    public DateOnly? StartDate { get; init; } = null;
 
     /// <summary>
     /// Статус заказа
@@ -263,7 +263,7 @@ public record RoutePointUpdateCommand
     /// <summary>
     /// Дата прибытия в точку маршрута
     /// </summary>
-    public DateTime? Date { get; init; } = null;
+    public DateOnly? Date { get; init; } = null;
 
     /// <summary>
     /// Флаг, является ли точка погрузочной

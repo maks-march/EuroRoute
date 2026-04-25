@@ -2,6 +2,7 @@ using System.Reflection;
 using Application.Common.Mappings;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi;
+using WebApi.DTO;
 
 namespace WebApi.Extensions;
 
@@ -63,6 +64,8 @@ public static class DependencyInjection
                 };
                 return requirement;
             });
+            options.EnableAnnotations();
+            options.SchemaFilter<JsonDefaultFilter>();
             // Получаем путь к XML-файлу, сгенерированному для WebApi
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

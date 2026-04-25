@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Enums;
 using Domain.Models.Order;
 using MediatR;
+using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Create;
 
@@ -20,12 +21,11 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Дата начала выполнения заказа
     /// </summary>
-    public DateTime StartDate { get; init; } = DateTime.UtcNow.AddDays(1);
+    public DateOnly StartDate { get; init; } = DateTime.Now.AddDays(1).ToDateOnly();
 
     /// <summary>
     /// Статус заказа
     /// </summary>
-    [DefaultValue(nameof(OrderStatus.Ready))]
     public string Status { get; init; } = nameof(OrderStatus.Ready);
 
     /// <summary>
@@ -36,10 +36,6 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Номер спецификации
     /// </summary>
-    /// <summary>
-    /// Статус заказа
-    /// </summary>
-    [DefaultValue(100)] 
     public int SpecNumber { get; init; } = 100;
 
     /// <summary>
@@ -55,12 +51,12 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Коллекция грузов
     /// </summary>
-    public IList<PayloadCreateCommand> Payloads { get; init; } = [];
+    public IList<PayloadCreateCommand> Payloads { get; init; } = [new ()];
 
     /// <summary>
     /// Коллекция точек маршрута
     /// </summary>
-    public IList<RoutePointCreateCommand> RoutePoints { get; init; } = [];
+    public IList<RoutePointCreateCommand> RoutePoints { get; init; } = [new (), new()];
 
     /// <summary>
     /// Настройка маппинга команды в доменную модель заказа
@@ -249,7 +245,7 @@ public record RoutePointCreateCommand
     /// <summary>
     /// Дата прибытия в точку маршрута
     /// </summary>
-    public DateTime Date { get; init; } = DateTime.Today.AddDays(1);
+    public DateOnly Date { get; init; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
     /// <summary>
     /// Флаг, является ли точка погрузочной

@@ -9,9 +9,9 @@ public static class OrderDetailsVmExtensions
     public static bool CheckFields(this OrderDetailsVm vm)
     {
         vm.Id.Should().NotBeEmpty();
-        vm.Created.Should().BeBefore(DateTime.UtcNow);
+        vm.Created.Should().BeBefore(DateTime.Now);
         vm.Status.Should().NotBeEmpty();
-        vm.StartDate.Should().BeAfter(DateTime.UtcNow);
+        vm.StartDate.Should().BeAfter(DateOnly.FromDateTime(DateTime.Now));
         
         vm.Payment.Should().NotBeNull();
         
@@ -54,7 +54,7 @@ public static class OrderDetailsVmExtensions
             route.City.Should().NotBeEmpty();
             route.Address.Should().NotBeEmpty();
             route.LoadTimeStart.Should().BeLessThanOrEqualTo(route.LoadTimeStart);
-            route.Date.Should().BeAfter(DateTime.UtcNow);
+            route.Date.Should().BeAfter(DateOnly.FromDateTime(DateTime.Now));
         }
         vm.RoutePoints.First().IsLoad.Should().BeTrue();
         vm.RoutePoints.Last().IsLoad.Should().BeFalse();

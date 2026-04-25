@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Common.EntityTypeConfigurations;
 using Persistence.Common.EntityTypeConfigurations.Order;
+using File = Domain.Models.File;
 
 namespace Persistence.Common.DbContexts;
 

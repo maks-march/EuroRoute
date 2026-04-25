@@ -1,4 +1,5 @@
 using FluentValidation;
+using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 
@@ -18,7 +19,7 @@ public class RoutePointDtoValidator : AbstractValidator<RoutePointCreateCommand>
         // Date - дата должна быть указана и не может быть в далеком прошлом
         RuleFor(x => x.Date)
             .NotEmpty().WithMessage("Date for the route point is required.")
-            .GreaterThan(DateTime.UtcNow.AddDays(-1)).WithMessage("Date cannot be in the past.");
+            .GreaterThan(DateTime.Now.AddDays(-1).ToDateOnly()).WithMessage("Date cannot be in the past.");
             
         // LoadTimeEnd должно быть больше или равно LoadTimeStart
         RuleFor(x => x.LoadTimeEnd)

@@ -4,7 +4,7 @@ namespace Domain.Models.Order;
 
 public class Order : HasAuthor
 {
-    public required DateTime StartDate { get; set; }
+    public required DateOnly StartDate { get; set; }
     public required OrderStatus Status { get; set; }
     
     public int SpecNumber { get; set; }

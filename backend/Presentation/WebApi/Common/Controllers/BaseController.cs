@@ -9,7 +9,7 @@ namespace WebApi.Common.Controllers;
 /// </summary>
 /// <param name="mediator">Медиатор - обрабатывает запросы</param>
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class BaseController(IMediator mediator) : ControllerBase
 {
     /// <summary>

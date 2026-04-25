@@ -6,14 +6,13 @@ using WebApi.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironment(builder.Configuration);
-
 builder.Services
     .AddPersistenceServices(builder.Configuration)
     .AddApplicationServices()
     .AddWebApiServices();
 
 
-// Доверяем только Nginx???
+// Доверяем только Nginx?
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
