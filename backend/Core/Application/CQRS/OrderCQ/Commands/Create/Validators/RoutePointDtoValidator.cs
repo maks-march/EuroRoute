@@ -1,5 +1,5 @@
+using Application.Common.Extensions;
 using FluentValidation;
-using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Create.Validators;
 

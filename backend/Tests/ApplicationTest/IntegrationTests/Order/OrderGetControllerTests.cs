@@ -9,8 +9,6 @@ namespace ApplicationTest.IntegrationTests.Order;
 [TestFixture]
 public class OrderGetControllerTests : OrderTest
 {
-    private const string BaseUrl = "/api/Order";
-
     [Test]
     public async Task Get_WithInvalidCredentials_ShouldBeNotFound()
     {

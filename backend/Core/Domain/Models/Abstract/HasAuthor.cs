@@ -1,4 +1,4 @@
-namespace Domain.Models;
+namespace Domain.Models.Abstract;
 
 public abstract class HasAuthor : Entity
 {

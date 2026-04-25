@@ -1,8 +1,8 @@
-using Microsoft.OpenApi;
 using System.Reflection;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace WebApi.DTO;
+namespace Application.DTO.Attributes;
 
 public class JsonDefaultFilter : ISchemaFilter
 {

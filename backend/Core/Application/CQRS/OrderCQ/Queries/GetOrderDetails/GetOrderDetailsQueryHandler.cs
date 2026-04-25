@@ -24,7 +24,7 @@ public class GetOrderDetailsQueryHandler(
             .FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
         if (order == null || order.Id != request.Id)
         {
-            throw new NotFoundException(nameof(Order), request.Id);
+            throw new NotFoundException(nameof(OrderEntity), request.Id);
         }
         return mapper.Map<OrderDetailsVm>(order);
     }

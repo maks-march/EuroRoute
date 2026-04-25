@@ -48,7 +48,7 @@ public class GetOrderListQueryHandler(
             query = query.Where(o => o.Payloads.Sum(p => p.Weight) <= request.MaxWeight.Value);
         }
         
-        var columnsMap = new Dictionary<string, Expression<Func<Order, object>>>
+        var columnsMap = new Dictionary<string, Expression<Func<OrderEntity, object>>>
         {
             ["date"] = o => o.StartDate,
             ["specnumber"] = o => o.SpecNumber,

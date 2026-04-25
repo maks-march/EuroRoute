@@ -17,8 +17,8 @@ public class UpdateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
         if (!orderExists)
         {
             var exists = await dbContext.Orders.AnyAsync(o => o.Id == request.Id, cancellationToken);
-            if (!exists) throw new NotFoundException(nameof(Order), request.Id);
-            throw new ForbiddenException(nameof(Order), request.UserId);
+            if (!exists) throw new NotFoundException(nameof(OrderEntity), request.Id);
+            throw new ForbiddenException(nameof(OrderEntity), request.UserId);
         }
         
         var order = await dbContext.Orders
@@ -45,13 +45,11 @@ public class UpdateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
         
         order.Updated = DateTime.UtcNow;
         dbContext.Orders.Update(order);
-        dbContext.ChangeTracker.DetectChanges();
-        Console.WriteLine(dbContext.ChangeTracker.DebugView.LongView);
         await dbContext.SaveChangesAsync(cancellationToken);
         return order.Id;
     }
 
-    private void UpdateCollection<T, K>(IList<T> orderCollection, IList<K> newList, Order order) 
+    private void UpdateCollection<T, K>(IList<T> orderCollection, IList<K> newList, OrderEntity order) 
         where T : OrderCollectionField
     {
         for (int i = orderCollection.Count - 1; i >= 0; i--)

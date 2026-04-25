@@ -1,0 +1,37 @@
+using Application.Interfaces;
+
+namespace WebApi.Common.Services;
+
+internal class FileService(IWebHostEnvironment enviroment) : IFileService
+{
+    public async Task<string[]> SaveFiles(CancellationToken cancellationToken, params IFormFile[] files)
+    {
+        var paths = new List<string>();
+        // Путь к папке, куда мы будем сохранять файлы (например, wwwroot/uploads/orders)
+        var uploadsFolderPath = Path.Combine(enviroment.ContentRootPath, "uploads");
+        Directory.CreateDirectory(uploadsFolderPath);
+
+        foreach (var file in files)
+        {
+            // Генерируем уникальное имя файла, чтобы избежать конфликтов
+            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+            // Асинхронно копируем содержимое файла из временного хранилища в наш файл
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream, cancellationToken);
+            }
+        
+            // Сохраняем относительный URL файла, чтобы потом его можно было отобразить
+            // Например: "/uploads/orders/guid_имяфайла.jpg"
+            paths.Add(filePath.Replace('\\', '/'));
+        }
+        return paths.ToArray();
+    }
+
+    public Task<bool> DeleteFiles(CancellationToken cancellationToken, params string[] paths)
+    {
+        return Task.FromResult(true);
+    }
+}

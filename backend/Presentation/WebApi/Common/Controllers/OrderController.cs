@@ -3,7 +3,9 @@ using Application.CQRS.OrderCQ.Commands.Delete;
 using Application.CQRS.OrderCQ.Commands.Update;
 using Application.CQRS.OrderCQ.Queries.GetOrderDetails;
 using Application.CQRS.OrderCQ.Queries.GetOrdersList;
+using Application.CQRS.PhotoCQ.Commands;
 using Application.DTO.Order;
+using Domain.Models.Order;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -106,6 +108,18 @@ public class OrderController(IMediator mediator) : BaseController(mediator)
     public async Task<ActionResult> Delete(Guid id)
     {
         var command = new DeleteOrderCommand(id, UserId);
+        await Mediator.Send(command);
+        return NoContent();
+    }
+    
+    [HttpPut("{id:guid}/photos")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult> PutPhotos(Guid id, [FromForm]PhotoDto photos)
+    {
+        var command = new UploadPhotoCommand<OrderEntity>(id, UserId, photos.Photos ?? []);
         await Mediator.Send(command);
         return NoContent();
     }

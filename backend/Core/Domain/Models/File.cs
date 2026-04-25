@@ -1,3 +1,5 @@
+using Domain.Models.Abstract;
+
 namespace Domain.Models;
 
 public abstract class FileEntity<TOwner> : Entity where TOwner : Entity
@@ -7,5 +9,5 @@ public abstract class FileEntity<TOwner> : Entity where TOwner : Entity
     public required TOwner Owner { get; set; }
 }
 
-public class OrderPhoto : FileEntity<Order.Order> { }
-public class UserAvatar : FileEntity<User> { }
+public class OrderPhoto : FileEntity<Order.OrderEntity>;
+public class UserAvatar : FileEntity<User>;

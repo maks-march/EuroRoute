@@ -1,8 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using Application.CQRS.OrderCQ.Commands.Create;
-using Application.DTO.Order;
-using ApplicationTest.Extensions;
 using FluentAssertions;
 using WebApi.DTO;
 

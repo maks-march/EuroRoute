@@ -10,7 +10,7 @@ public class CreateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
 {
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = mapper.Map<Order>(request);
+        var order = mapper.Map<OrderEntity>(request);
         
         order.Id = Guid.NewGuid();
         order.Created = DateTime.UtcNow;

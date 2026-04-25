@@ -16,11 +16,11 @@ public class DeleteOrderCommandHandler(IAppDbContext dbContext)
         if (!orderExists)
         {
             var exists = await dbContext.Orders.AnyAsync(o => o.Id == request.Id, cancellationToken);
-            if (!exists) throw new NotFoundException(nameof(Order), request.Id);
-            throw new ForbiddenException(nameof(Order), request.UserId);
+            if (!exists) throw new NotFoundException(nameof(OrderEntity), request.Id);
+            throw new ForbiddenException(nameof(OrderEntity), request.UserId);
         }
         var order = await dbContext.Orders.FindAsync([request.Id], cancellationToken) 
-            ?? throw new NotFoundException(nameof(Order), request.Id);
+            ?? throw new NotFoundException(nameof(OrderEntity), request.Id);
         dbContext.Orders.Remove(order);
         await dbContext.SaveChangesAsync(cancellationToken);
     }

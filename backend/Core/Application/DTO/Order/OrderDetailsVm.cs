@@ -5,7 +5,7 @@ using Domain.Models.Order;
 
 namespace Application.DTO.Order;
 
-public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.Order>
+public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.OrderEntity>
 {
     public Guid Id { get; init; }
     public DateTime Created { get; init; }
@@ -13,7 +13,7 @@ public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.
 
     public new void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Order.Order, OrderDetailsVm>()
+        profile.CreateMap<Domain.Models.Order.OrderEntity, OrderDetailsVm>()
             .ForMember(dest => 
                 dest.Status,opt =>
                 opt.MapFrom(src => src.Status.ToString()))

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Application.Common.Extensions;
 using Application.CQRS.OrderCQ.Commands.Update;
 using Application.DTO.Order;
 using ApplicationTest.Extensions;

@@ -1,17 +1,18 @@
 using System.ComponentModel;
+using Application.Common.Extensions;
 using Application.Common.Mappings;
+using Application.DTO.Attributes;
 using AutoMapper;
 using Domain.Enums;
 using Domain.Models.Order;
 using MediatR;
-using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Create;
 
 /// <summary>
 /// Команда для создания нового заказа
 /// </summary>
-public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
+public record CreateOrderCommand : IRequest<Guid>, IMapWith<OrderEntity>
 {
     /// <summary>
     /// Идентификатор пользователя, создающего заказ
@@ -21,11 +22,13 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Дата начала выполнения заказа
     /// </summary>
+    [SwaggerJsonDefault(typeof(DateOnly))]
     public DateOnly StartDate { get; init; } = DateTime.Now.AddDays(1).ToDateOnly();
 
     /// <summary>
     /// Статус заказа
     /// </summary>
+    [DefaultValue(nameof(OrderStatus.Ready))]
     public string Status { get; init; } = nameof(OrderStatus.Ready);
 
     /// <summary>
@@ -36,26 +39,31 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <summary>
     /// Номер спецификации
     /// </summary>
+    [DefaultValue(100)]
     public int SpecNumber { get; init; } = 100;
 
     /// <summary>
     /// Информация об оплате
     /// </summary>
+    [SwaggerJsonDefault(typeof(PaymentCreateCommand))]
     public PaymentCreateCommand Payment { get; init; } = new();
 
     /// <summary>
     /// Информация о транспорте
     /// </summary>
+    [SwaggerJsonDefault(typeof(TransportCreateCommand))]
     public TransportCreateCommand Transport { get; init; } = new();
 
     /// <summary>
     /// Коллекция грузов
     /// </summary>
+    [SwaggerJsonDefault(typeof(PayloadCreateCommand), 1)]
     public IList<PayloadCreateCommand> Payloads { get; init; } = [new ()];
 
     /// <summary>
     /// Коллекция точек маршрута
     /// </summary>
+    [SwaggerJsonDefault(typeof(RoutePointCreateCommand), 2)]
     public IList<RoutePointCreateCommand> RoutePoints { get; init; } = [new (), new()];
 
     /// <summary>
@@ -64,11 +72,11 @@ public record CreateOrderCommand : IRequest<Guid>, IMapWith<Order>
     /// <param name="profile">Профиль маппера AutoMapper</param>
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<CreateOrderCommand, Order>()
+        profile.CreateMap<CreateOrderCommand, OrderEntity>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Created, opt => opt.Ignore())
             .ForMember(dest => dest.Updated, opt => opt.Ignore())
-            .ForMember(dest => dest.Photo, opt => opt.Ignore())
+            .ForMember(dest => dest.Photos, opt => opt.Ignore())
             .ForMember(dest => 
                 dest.Status,opt =>
                 opt.MapFrom(src => Enum.Parse<OrderStatus>(src.Status)))

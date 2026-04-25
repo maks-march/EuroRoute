@@ -1,4 +1,4 @@
-namespace Domain.Models;
+namespace Domain.Models.Abstract;
 
 public abstract class Entity : BaseEntity
 {
@@ -8,5 +8,5 @@ public abstract class Entity : BaseEntity
 
 public abstract class BaseEntity
 {
-    public required Guid Id { get; set; }
+    public required Guid Id { get; set; } = Guid.NewGuid();
 }

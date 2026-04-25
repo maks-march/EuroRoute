@@ -1,7 +1,10 @@
 using System.Reflection;
 using Application.Common.Mappings;
+using Application.DTO.Attributes;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi;
+using WebApi.Common.Services;
 using WebApi.DTO;
 
 namespace WebApi.Extensions;
@@ -18,12 +21,18 @@ public static class DependencyInjection
     public static IServiceCollection AddWebApiServices(this IServiceCollection services)
     {
         return services
+            .AddServices()
             .AddConfiguredAutoMapper()
             .AddConfiguredControllers()
             .AddEndpointsApiExplorer()
             .AddConfiguredSwaggerGen();
     }
 
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        return services.AddScoped<IFileService, FileService>();
+    }
+    
     private static IServiceCollection AddConfiguredSwaggerGen(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
@@ -57,8 +66,8 @@ public static class DependencyInjection
             });
             options.AddSecurityRequirement(document =>
             {
-                OpenApiSecuritySchemeReference? schemeRef = new("Bearer", document);
-                OpenApiSecurityRequirement? requirement = new()
+                OpenApiSecuritySchemeReference schemeRef = new("Bearer", document);
+                OpenApiSecurityRequirement requirement = new()
                 {
                     [schemeRef] = []
                 };

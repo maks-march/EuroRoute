@@ -1,4 +1,4 @@
-namespace WebApi.Extensions;
+namespace Application.Common.Extensions;
 
 public static class DateTimeExtensions
 {

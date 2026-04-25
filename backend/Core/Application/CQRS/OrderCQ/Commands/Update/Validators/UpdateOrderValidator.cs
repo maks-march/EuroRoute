@@ -1,6 +1,6 @@
+using Application.Common.Extensions;
 using Domain.Enums;
 using FluentValidation;
-using WebApi.Extensions;
 
 namespace Application.CQRS.OrderCQ.Commands.Update.Validators;
 

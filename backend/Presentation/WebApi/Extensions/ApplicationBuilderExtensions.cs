@@ -37,7 +37,6 @@ public static class ApplicationBuilderExtensions
     /// <param name="app"></param>
     public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder app)
     {
-        app.UseMiddleware<CustomExceptionHandler>();
-        return app;
+        return app.UseMiddleware<CustomExceptionHandler>();
     }
 }

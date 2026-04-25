@@ -1,13 +1,12 @@
 using Domain.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OrderModel = Domain.Models.Order.Order;
 
 namespace Persistence.Common.EntityTypeConfigurations.Order;
 
-public class OrderConfiguration : IEntityTypeConfiguration<OrderModel>
+public class OrderConfiguration : IEntityTypeConfiguration<OrderEntity>
 {
-    public void Configure(EntityTypeBuilder<OrderModel> builder)
+    public void Configure(EntityTypeBuilder<OrderEntity> builder)
     {
         builder.ToTable("Orders");
         builder.HasKey(o => o.Id);
@@ -41,7 +40,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<OrderModel>
             .OnDelete(DeleteBehavior.Cascade);
                
         // Настройка для массивов строк
-        builder.HasMany(o => o.Photo)
+        builder.HasMany(o => o.Photos)
             .WithOne(f => f.Owner)
             .HasForeignKey(f => f.OwnerId);
     }

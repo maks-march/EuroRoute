@@ -1,8 +1,8 @@
 using Domain.Models;
+using Domain.Models.Abstract;
 using Domain.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using File = Domain.Models.File;
 
 namespace Application.Interfaces;
 
@@ -10,7 +10,7 @@ public interface IAppDbContext
 {
     public DbSet<User> BusinessUsers { get; set; }
     public DbSet<Truck> Trucks { get; set; }
-    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderEntity> Orders { get; set; }
     public DbSet<Payload> Payloads { get; set; }
     public DbSet<RoutePoint> RoutePoints { get; set; }
     public DbSet<Transport> Transports { get; set; }
@@ -18,6 +18,6 @@ public interface IAppDbContext
     public DbSet<OrderPhoto> Files { get; set; }
 
     public ChangeTracker ChangeTracker { get; }
-    public DbSet<T> Set<T>() where T : OrderCollectionField;
+    public DbSet<TEntity> Set<TEntity>() where TEntity : class;
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

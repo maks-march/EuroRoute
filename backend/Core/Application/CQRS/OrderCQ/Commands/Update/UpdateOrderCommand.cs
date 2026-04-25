@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Enums;
@@ -9,7 +10,7 @@ namespace Application.CQRS.OrderCQ.Commands.Update;
 /// <summary>
 /// Команда для обновления существующего заказа
 /// </summary>
-public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
+public record UpdateOrderCommand : IRequest<Guid>, IMapWith<OrderEntity>
 {
     /// <summary>
     /// Идентификатор обновляемого заказа
@@ -60,7 +61,7 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<UpdateOrderCommand, Order>()
+        profile.CreateMap<UpdateOrderCommand, OrderEntity>()
             .ForMember(dest =>
                 dest.Id, opt =>
                 opt.Ignore())
@@ -89,7 +90,7 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<Order>
                 }
             )
             .ForMember(dest =>
-                    dest.Photo,
+                    dest.Photos,
                 opt =>
                     opt.Ignore())
             .ForMember(dest =>
@@ -253,11 +254,13 @@ public record RoutePointUpdateCommand
     /// <summary>
     /// Время начала загрузки/разгрузки
     /// </summary>
+    [DefaultValue("00:00:00")]
     public TimeSpan? LoadTimeStart { get; init; } = null;
     
     /// <summary>
     /// Время окончания загрузки/разгрузки
     /// </summary>
+    [DefaultValue("00:00:00")]
     public TimeSpan? LoadTimeEnd { get; init; } = null;
 
     /// <summary>
