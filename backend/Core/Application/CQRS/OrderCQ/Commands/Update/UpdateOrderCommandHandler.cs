@@ -44,7 +44,6 @@ public class UpdateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
         }
         
         order.Updated = DateTime.UtcNow;
-        dbContext.Orders.Update(order);
         await dbContext.SaveChangesAsync(cancellationToken);
         return order.Id;
     }
@@ -62,10 +61,9 @@ public class UpdateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
             }
             else
             {
-                dbContext.Set<T>().Remove(existing);
+                dbContext.GetDbSet<T>().Remove(existing);
             }
         }
-
         if (newList.Count > orderCollection.Count)
         {
             for (int i = orderCollection.Count; i < newList.Count; i++)

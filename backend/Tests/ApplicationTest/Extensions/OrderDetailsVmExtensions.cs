@@ -88,6 +88,7 @@ public static class OrderDetailsVmExtensions
         if (vm.Transport is { TemperatureFrom: not null, TemperatureTo: not null })
             vm.Transport.TemperatureFrom.Should().BeLessThanOrEqualTo((int)vm.Transport.TemperatureTo);
         
+        vm.Payloads.Count.Should().NotBe(other.Payloads.Count);
         foreach (var (payload, otherPayload) in vm.Payloads.Zip(other.Payloads))
         {
             payload.Should().NotBeNull();
@@ -98,6 +99,7 @@ public static class OrderDetailsVmExtensions
             payload.Wrap.Should().NotBe(otherPayload.Wrap);
         }
         
+        vm.RoutePoints.Count.Should().NotBe(other.RoutePoints.Count);
         foreach (var (route, otherRoute) in vm.RoutePoints.Zip(other.RoutePoints))
         {
             route.Should().NotBeNull();

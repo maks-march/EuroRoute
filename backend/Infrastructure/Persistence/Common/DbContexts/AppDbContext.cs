@@ -23,6 +23,11 @@ public class AppDbContext
     public DbSet<Payment> Payments { get; set; }
     public DbSet<OrderPhoto> Files { get; set; }
     
+    public DbSet<T> GetDbSet<T>() where T : class
+    {
+        return Set<T>();
+    }
+
     public AppDbContext(DbContextOptions<AppDbContext> options) 
         : base(options) { }
     

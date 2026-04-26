@@ -18,6 +18,6 @@ public interface IAppDbContext
     public DbSet<OrderPhoto> Files { get; set; }
 
     public ChangeTracker ChangeTracker { get; }
-    public DbSet<TEntity> Set<TEntity>() where TEntity : class;
+    public DbSet<T> GetDbSet<T>() where T : class;
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

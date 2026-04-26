@@ -13,7 +13,7 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
 {
     public async Task Handle(UploadPhotoCommand<TOwner> request, CancellationToken cancellationToken)
     {
-        var item = await dbContext.Set<TOwner>().FindAsync([request.ItemId], cancellationToken);
+        var item = await dbContext.GetDbSet<TOwner>().FindAsync([request.ItemId], cancellationToken);
         if (item == null)
             throw new NotFoundException(nameof(item), request.ItemId);
         if (item is User user)
@@ -59,7 +59,7 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
             }
             else
             {
-                dbContext.Set<OrderPhoto>().Remove(existing);
+                dbContext.GetDbSet<OrderPhoto>().Remove(existing);
             }
         }
         

@@ -8,5 +8,5 @@ public abstract class Entity : BaseEntity
 
 public abstract class BaseEntity
 {
-    public required Guid Id { get; set; } = Guid.NewGuid();
+    public required Guid Id { get; set; } = Guid.Empty;
 }
