@@ -23,7 +23,7 @@ public abstract class OrderTest : BaseIntegrationTest
             RoutePoints = [new RoutePointCreateCommand(), new RoutePointCreateCommand()]
         };
         
-        return await _client.PostAsJsonAsync(BaseUrl, createDto);
+        return await Client.PostAsJsonAsync(BaseUrl, createDto);
     }
     protected bool CheckProps<T, TPayload, TPayment, TTransport, TRoutePoint>(ErrorResponse? error)
     {

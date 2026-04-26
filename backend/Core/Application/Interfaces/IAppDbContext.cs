@@ -1,5 +1,4 @@
 using Domain.Models;
-using Domain.Models.Abstract;
 using Domain.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

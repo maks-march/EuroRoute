@@ -13,3 +13,10 @@
 # Что дальше?
 Можно перейти по http://localhost:80 и откроется главная страница фронтенда, 
 можно перейти на https://localhost/swagger чтобы увидеть API
+
+ИЛИ запуск backend без docker
+Перейдите в папку backend:
+PS D:\progs\C#\EuroRoute\backend> cd .\Presentation\WebApi\
+PS D:\progs\C#\EuroRoute\backend\Presentation\WebApi> dotnet run
+
+Бэк запустится в памяти на порте 5024

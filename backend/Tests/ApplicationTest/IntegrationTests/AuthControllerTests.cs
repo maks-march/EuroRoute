@@ -49,7 +49,7 @@ public class AuthControllerTests : BaseIntegrationTest
             Password = Password
         };
         
-        var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
+        var response = await Client.PostAsJsonAsync("/api/Auth/login", loginCommand);
         
         response.IsSuccessStatusCode.Should().BeTrue();
 
@@ -69,7 +69,7 @@ public class AuthControllerTests : BaseIntegrationTest
             Password = "wrong-password"
         };
         
-        var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
+        var response = await Client.PostAsJsonAsync("/api/Auth/login", loginCommand);
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
     }
     
@@ -85,7 +85,7 @@ public class AuthControllerTests : BaseIntegrationTest
             Password = "wrong-password"
         };
         
-        var response = await _client.PostAsJsonAsync("/api/Auth/login", loginCommand);
+        var response = await Client.PostAsJsonAsync("/api/Auth/login", loginCommand);
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
     }
 
@@ -121,8 +121,8 @@ public class AuthControllerTests : BaseIntegrationTest
             RefreshToken = authResponse.RefreshToken.Substring(0, authResponse.RefreshToken.Length / 2)
         };
         
-        var responseInvalidAccess = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommandInvalidAccess);
-        var responseInvalidRefresh = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommandInvalidRefresh);
+        var responseInvalidAccess = await Client.PostAsJsonAsync("/api/Auth/refresh", refreshCommandInvalidAccess);
+        var responseInvalidRefresh = await Client.PostAsJsonAsync("/api/Auth/refresh", refreshCommandInvalidRefresh);
         
         responseInvalidAccess.IsSuccessStatusCode.Should().BeFalse();
         responseInvalidAccess.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
@@ -148,8 +148,8 @@ public class AuthControllerTests : BaseIntegrationTest
             RefreshToken = authResponse.RefreshToken
         };
         
-        var response = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommand);
-        var response2 = await _client.PostAsJsonAsync("/api/Auth/refresh", refreshCommand2);
+        var response = await Client.PostAsJsonAsync("/api/Auth/refresh", refreshCommand);
+        var response2 = await Client.PostAsJsonAsync("/api/Auth/refresh", refreshCommand2);
         
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);

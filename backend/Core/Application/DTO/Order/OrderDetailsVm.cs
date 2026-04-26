@@ -5,18 +5,34 @@ using Domain.Models.Order;
 
 namespace Application.DTO.Order;
 
-public record OrderDetailsVm : CreateOrderCommand, IMapWith<Domain.Models.Order.OrderEntity>
+public record OrderDetailsVm : CreateOrderCommand, IMapWith<OrderEntity>
 {
+    /// <summary>
+    /// Id заказа
+    /// </summary>
     public Guid Id { get; init; }
+    /// <summary>
+    /// Время создания заказа
+    /// </summary>
     public DateTime Created { get; init; }
+    /// <summary>
+    /// Время последнего обновления заказа
+    /// </summary>
     public DateTime Updated { get; init; }
+    /// <summary>
+    /// Приложенные фото
+    /// </summary>
+    public string[] Photos { get; init; } = [];
 
     public new void Mapping(Profile profile)
     {
-        profile.CreateMap<Domain.Models.Order.OrderEntity, OrderDetailsVm>()
+        profile.CreateMap<OrderEntity, OrderDetailsVm>()
             .ForMember(dest => 
                 dest.Status,opt =>
                 opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => 
+                dest.Photos,opt =>
+                opt.MapFrom(src => src.Photos.OrderBy(r => r.OrderIndex).Select(p => p.FilePath).ToArray()))
             
             // Настраиваем маппинг для вложенных DTO
             .ForMember(dest => 

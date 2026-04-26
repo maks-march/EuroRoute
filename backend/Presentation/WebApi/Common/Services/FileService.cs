@@ -6,23 +6,21 @@ internal class FileService(IWebHostEnvironment enviroment) : IFileService
 {
     public async Task<string[]> SaveFiles(CancellationToken cancellationToken, params IFormFile[] files)
     {
+        if (files.Length == 0)
+            return [];
         var paths = new List<string>();
-        // Путь к папке, куда мы будем сохранять файлы (например, wwwroot/uploads/orders)
-        var uploadsFolderPath = Path.Combine(enviroment.ContentRootPath, "uploads");
-        Directory.CreateDirectory(uploadsFolderPath);
-
+        var tasks = new List<Task>();
         foreach (var file in files)
         {
             // Генерируем уникальное имя файла, чтобы избежать конфликтов
             var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-            var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+            var filePath = Path.Combine(enviroment.WebRootPath, uniqueFileName);
 
             // Асинхронно копируем содержимое файла из временного хранилища в наш файл
-            await using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream, cancellationToken);
             }
-        
             // Сохраняем относительный URL файла, чтобы потом его можно было отобразить
             // Например: "/uploads/orders/guid_имяфайла.jpg"
             paths.Add(filePath.Replace('\\', '/'));
@@ -32,6 +30,26 @@ internal class FileService(IWebHostEnvironment enviroment) : IFileService
 
     public Task<bool> DeleteFiles(CancellationToken cancellationToken, params string[] paths)
     {
-        return Task.FromResult(true);
+        bool allDeleted = true;
+        foreach (var relativePath in paths)
+        {
+            if (string.IsNullOrWhiteSpace(relativePath)) continue;
+
+            // Склеиваем wwwroot + относительный путь из базы
+            var fullPath = relativePath;
+
+            try
+            {
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
+            catch
+            {
+                allDeleted = false;
+            }
+        }
+        return Task.FromResult(allDeleted);
     }
 }

@@ -14,7 +14,7 @@ public class UserControllerTests : BaseIntegrationTest
     private const string BaseUrl = "api/User/";
     private async Task<UserDetailsVm> CheckGet_User(Guid id)
     {
-        var response = await _client.GetAsync($"{BaseUrl}{id}");
+        var response = await Client.GetAsync($"{BaseUrl}{id}");
         
         response.IsSuccessStatusCode.Should().BeTrue();
         var vm = await response.Content.ReadFromJsonAsync<UserDetailsVm>();
@@ -35,7 +35,7 @@ public class UserControllerTests : BaseIntegrationTest
     [Test]
     public async Task GetMe_WithValidCredentials_ShouldBeOk()
     {
-        var response = await _client.GetAsync($"{BaseUrl}me");
+        var response = await Client.GetAsync($"{BaseUrl}me");
         
         response.IsSuccessStatusCode.Should().BeTrue();
         var vm = await response.Content.ReadFromJsonAsync<UserDetailsVm>();
@@ -48,7 +48,7 @@ public class UserControllerTests : BaseIntegrationTest
     [Test]
     public async Task Get_WithInvalidCredentials_ShouldNotBeFound()
     {
-        var response = await _client.GetAsync($"{BaseUrl}{Guid.NewGuid()}");
+        var response = await Client.GetAsync($"{BaseUrl}{Guid.NewGuid()}");
         
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         var vm = await response.Content.ReadFromJsonAsync<ErrorResponse>();
@@ -61,7 +61,7 @@ public class UserControllerTests : BaseIntegrationTest
     [Test]
     public async Task GetList_WithValidCredentials_ShouldBeOk()
     {
-        var response = await _client.GetAsync(BaseUrl);
+        var response = await Client.GetAsync(BaseUrl);
         
         response.IsSuccessStatusCode.Should().BeTrue();
         var vm = await response.Content.ReadFromJsonAsync<UserListVm>();
@@ -81,7 +81,7 @@ public class UserControllerTests : BaseIntegrationTest
             Name = "NewName",
             Surname = "NewSurname"
         };
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}me", request);
+        var response = await Client.PatchAsJsonAsync($"{BaseUrl}me", request);
         
         response.IsSuccessStatusCode.Should().BeTrue();
         var id = await response.Content.ReadFromJsonAsync<Guid>();
@@ -105,7 +105,7 @@ public class UserControllerTests : BaseIntegrationTest
                 Enumerable.Repeat("Update_WithInvalidCredentials_ShouldBeBadRequest", 20)
             )
         };
-        var response = await _client.PatchAsJsonAsync($"{BaseUrl}me", request);
+        var response = await Client.PatchAsJsonAsync($"{BaseUrl}me", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var vm = await response.Content.ReadFromJsonAsync<ErrorResponse>();

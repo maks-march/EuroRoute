@@ -5,7 +5,6 @@ using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi;
 using WebApi.Common.Services;
-using WebApi.DTO;
 
 namespace WebApi.Extensions;
 

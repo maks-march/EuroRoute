@@ -84,14 +84,14 @@ public class OrderPostControllerTests : OrderTest
     public async Task Delete_WithValidCredentials_ShouldBeOk()
     {
         var id = await PostValidOrder();
-        var response = await _client.DeleteAsync($"{BaseUrl}/{id}");
+        var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
     [Test]
     public async Task Delete_WithInvalidCredentials_ShouldBeNotFound()
     {
-        var response = await _client.DeleteAsync($"{BaseUrl}{Guid.NewGuid()}");
+        var response = await Client.DeleteAsync($"{BaseUrl}{Guid.NewGuid()}");
         
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }

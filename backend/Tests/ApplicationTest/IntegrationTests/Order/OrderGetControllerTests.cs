@@ -12,7 +12,7 @@ public class OrderGetControllerTests : OrderTest
     [Test]
     public async Task Get_WithInvalidCredentials_ShouldBeNotFound()
     {
-        var response = await _client.GetAsync($"{BaseUrl}/{Guid.NewGuid()}");
+        var response = await Client.GetAsync($"{BaseUrl}/{Guid.NewGuid()}");
         
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -23,7 +23,7 @@ public class OrderGetControllerTests : OrderTest
         await PostValidOrder();
         await PostValidOrder();
 
-        var response = await _client.GetAsync(BaseUrl);
+        var response = await Client.GetAsync(BaseUrl);
         
         var orders = await ExtractFromResponse<OrderListVm[]>(response);
         orders.Should().NotBeNull();
@@ -35,7 +35,7 @@ public class OrderGetControllerTests : OrderTest
     {
         var orderId = await PostValidOrder();
 
-        var response = await _client.GetAsync($"{BaseUrl}/{orderId}");
+        var response = await Client.GetAsync($"{BaseUrl}/{orderId}");
 
         var order = await ExtractFromResponse<OrderDetailsVm>(response);
         order.Should().NotBeNull();
@@ -61,7 +61,7 @@ public class OrderGetControllerTests : OrderTest
         });
 
         var queryString = $"?StartCity={city}&Status={status}&MaxWeight=50";
-        var response = await _client.GetAsync(BaseUrl + queryString);
+        var response = await Client.GetAsync(BaseUrl + queryString);
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().HaveCount(1);
@@ -75,7 +75,7 @@ public class OrderGetControllerTests : OrderTest
         await PostValidOrder(new CreateOrderCommand { StartDate = targetDate });
         await PostValidOrder(new CreateOrderCommand { StartDate = new DateOnly(3025, 01, 01) });
 
-        var response = await _client.GetAsync($"{BaseUrl}?MinStartDate={targetDate:yyyy-MM-dd}");
+        var response = await Client.GetAsync($"{BaseUrl}?MinStartDate={targetDate:yyyy-MM-dd}");
         
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().OnlyContain(x => x.StartDate >= targetDate);
@@ -88,7 +88,7 @@ public class OrderGetControllerTests : OrderTest
         await PostValidOrder(new CreateOrderCommand { Payloads = [new PayloadCreateCommand { Weight = 500 }] });
         await PostValidOrder(new CreateOrderCommand { Payloads = [new PayloadCreateCommand { Weight = 200 }] });
 
-        var response = await _client.GetAsync($"{BaseUrl}?SortBy=weight&IsAscending=false");
+        var response = await Client.GetAsync($"{BaseUrl}?SortBy=weight&IsAscending=false");
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().BeInDescendingOrder(x => x.TotalWeight);
@@ -115,7 +115,7 @@ public class OrderGetControllerTests : OrderTest
         });
 
         var query = $"?StartCity={city}&MinStartDate={targetDate:yyyy-MM-dd}&MaxWeight=10";
-        var response = await _client.GetAsync(BaseUrl + query);
+        var response = await Client.GetAsync(BaseUrl + query);
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().HaveCount(1);
@@ -128,7 +128,7 @@ public class OrderGetControllerTests : OrderTest
         await PostValidOrder(new CreateOrderCommand { RoutePoints = [new(), new() { City = destination }] });
         await PostValidOrder(new CreateOrderCommand { RoutePoints = [new(), new() { City = "Sochi" }] });
 
-        var response = await _client.GetAsync($"{BaseUrl}?EndCity={destination}");
+        var response = await Client.GetAsync($"{BaseUrl}?EndCity={destination}");
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().OnlyContain(x => x.EndCity == destination);
@@ -140,7 +140,7 @@ public class OrderGetControllerTests : OrderTest
         await PostValidOrder();
         await PostValidOrder();
 
-        var response = await _client.GetAsync($"{BaseUrl}?SortBy=specnumber&IsAscending=true");
+        var response = await Client.GetAsync($"{BaseUrl}?SortBy=specnumber&IsAscending=true");
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().BeInAscendingOrder(x => x.SpecNumber);
@@ -153,7 +153,7 @@ public class OrderGetControllerTests : OrderTest
         await PostValidOrder(new CreateOrderCommand { Payloads = [new PayloadCreateCommand { Weight = exactWeight }] });
         await PostValidOrder(new CreateOrderCommand { Payloads = [new PayloadCreateCommand { Weight = exactWeight + 10 }] });
 
-        var response = await _client.GetAsync($"{BaseUrl}?MaxWeight={exactWeight}");
+        var response = await Client.GetAsync($"{BaseUrl}?MaxWeight={exactWeight}");
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().OnlyContain(x => x.TotalWeight <= exactWeight);
@@ -164,7 +164,7 @@ public class OrderGetControllerTests : OrderTest
     {
         await PostValidOrder(new CreateOrderCommand { RoutePoints = [new() { City = "RealCity" }, new()] });
 
-        var response = await _client.GetAsync($"{BaseUrl}?StartCity=GhostCity");
+        var response = await Client.GetAsync($"{BaseUrl}?StartCity=GhostCity");
 
         var result = await ExtractFromResponse<OrderListVm[]>(response);
         result.Should().BeEmpty();

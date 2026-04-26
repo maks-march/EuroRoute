@@ -25,8 +25,10 @@ public class UpdateOrderCommandHandler(IAppDbContext dbContext, IMapper mapper)
             .Include(order => order.User)
             .Include(order => order.Payment)
             .Include(order => order.Transport)
-            .Include(order => order.Payloads)
-            .Include(order => order.RoutePoints)
+            .Include(order => order.Payloads
+                .OrderBy(p => p.OrderIndex))
+            .Include(order => order.RoutePoints
+                .OrderBy(p => p.OrderIndex))
             .FirstAsync(order => order.Id == request.Id, cancellationToken);
         
         mapper.Map(request, order);

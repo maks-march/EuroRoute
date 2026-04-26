@@ -1,10 +1,11 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using Application.CQRS.AuthCQ.Refresh;
 using Application.CQRS.AuthCQ.Register;
 using Application.DTO.Auth;
+using Application.Interfaces;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using WebApi.DTO;
 
 namespace ApplicationTest.Common;
@@ -12,9 +13,9 @@ namespace ApplicationTest.Common;
 [TestFixture]
 public abstract class BaseIntegrationTest
 {
-    private TestWebApplicationFactory<Program> _factory = null!;
-    protected HttpClient _client = null!;
-    protected JsonSerializerOptions _jsonOptions = null!;
+    private TestWebApplicationFactory<Program> _factory;
+    protected HttpClient Client;
+    protected IFileService FileService;
     protected const string Name = "Test";
     protected const string Surname = "User";
     protected const string Password = "Password123!";
@@ -25,12 +26,13 @@ public abstract class BaseIntegrationTest
     public void OneTimeSetUp()
     {
         _factory = new TestWebApplicationFactory<Program>();
-        _client = _factory.CreateClient();
-        _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        Client = _factory.CreateClient();
+        FileService = _factory.Services.GetService<IFileService>() 
+            ?? throw new NullReferenceException("File service not found in DI");
         
         Tokens = Register(Login).Result!;
         Tokens.Should().NotBeNull();
-        _client.DefaultRequestHeaders.Authorization = 
+        Client.DefaultRequestHeaders.Authorization = 
             new AuthenticationHeaderValue("Bearer", Tokens.AccessToken);
     }
     
@@ -43,7 +45,7 @@ public abstract class BaseIntegrationTest
             Login = login,
             Password = Password
         };
-        var response = await _client.PostAsJsonAsync("/api/Auth/register", command);
+        var response = await Client.PostAsJsonAsync("/api/Auth/register", command);
         
         response.IsSuccessStatusCode.Should().BeTrue();
         return await response.Content.ReadFromJsonAsync<AuthResponse>();
@@ -56,7 +58,7 @@ public abstract class BaseIntegrationTest
             AccessToken = authResponse!.AccessToken,
             RefreshToken = authResponse.RefreshToken,
         };
-        var response = await _client.PostAsJsonAsync("/api/Auth/refresh", command);
+        var response = await Client.PostAsJsonAsync("/api/Auth/refresh", command);
         
         response.IsSuccessStatusCode.Should().BeTrue();
         return await response.Content.ReadFromJsonAsync<AuthResponse>();
@@ -74,7 +76,7 @@ public abstract class BaseIntegrationTest
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        _client.Dispose();
+        Client.Dispose();
         _factory.Dispose();
     }
 }

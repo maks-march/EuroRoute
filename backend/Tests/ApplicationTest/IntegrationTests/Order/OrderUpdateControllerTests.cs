@@ -7,7 +7,6 @@ using ApplicationTest.Extensions;
 using Domain.Enums;
 using FluentAssertions;
 using WebApi.DTO;
-using WebApi.Extensions;
 
 namespace ApplicationTest.IntegrationTests.Order;
 
@@ -17,13 +16,13 @@ public class OrderUpdateControllerTests : OrderTest
     {
         var id = await PostValidOrder();
         
-        var orderResponse = await _client.GetAsync($"{BaseUrl}/{id}");
+        var orderResponse = await Client.GetAsync($"{BaseUrl}/{id}");
         var orderVm = await ExtractFromResponse<OrderDetailsVm>(orderResponse);
 
-        var updateResponse = await _client.PatchAsJsonAsync($"{BaseUrl}/{id}", command);
+        var updateResponse = await Client.PatchAsJsonAsync($"{BaseUrl}/{id}", command);
         var updateId = await ExtractFromResponse<Guid>(updateResponse);
         
-        var updatedResponse = await _client.GetAsync($"{BaseUrl}/{updateId}");
+        var updatedResponse = await Client.GetAsync($"{BaseUrl}/{updateId}");
         var updatedVm = await ExtractFromResponse<OrderDetailsVm>(updatedResponse);
         
         orderVm.Should().NotBeNull();
@@ -187,7 +186,7 @@ public class OrderUpdateControllerTests : OrderTest
                 }, new RoutePointUpdateCommand()
             ]
         };
-        var updateResponse = await _client.PatchAsJsonAsync($"{BaseUrl}/{id}", command);
+        var updateResponse = await Client.PatchAsJsonAsync($"{BaseUrl}/{id}", command);
         
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         

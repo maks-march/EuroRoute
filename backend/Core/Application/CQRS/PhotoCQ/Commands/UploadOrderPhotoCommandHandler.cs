@@ -32,7 +32,6 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
                 .ToArray());
             try
             {
-                await Task.WhenAll(save, del);
                 if (!del.Result)
                     throw new("Files clearing failed.");
             }
@@ -42,7 +41,6 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
             }
 
             UpdateCollection(order.Photos, save.Result, order);
-            dbContext.Orders.Update(order);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
         
@@ -69,12 +67,13 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
             {
                 var newFile = new OrderPhoto
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.Empty,
                     Created = DateTime.Now,
                     Updated = DateTime.Now,
                     FilePath = newList[i],
                     OwnerId = owner.Id,
-                    Owner = owner
+                    Owner = owner,
+                    OrderIndex = i
                 };
             
                 fileCollection.Add(newFile);

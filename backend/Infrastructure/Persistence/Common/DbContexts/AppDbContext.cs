@@ -1,7 +1,6 @@
 using Application.DTO.Auth;
 using Application.Interfaces;
 using Domain.Models;
-using Domain.Models.Abstract;
 using Domain.Models.Order;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

@@ -57,6 +57,10 @@ public record OrderListVm : IMapWith<Domain.Models.Order.OrderEntity>
     /// Минимальная стоимость среди всех способов оплаты
     /// </summary>
     public double MinCost { get; init; }
+    /// <summary>
+    /// Первое фото в заказе (обложка)
+    /// </summary>
+    public string FirstPhoto { get; init; } = string.Empty;
 
     /// <summary>
     /// Настройка маппинга между сущностью Order и ViewModel OrderListVm
@@ -69,6 +73,11 @@ public record OrderListVm : IMapWith<Domain.Models.Order.OrderEntity>
                 opt.MapFrom(src => nameof(src.Status)))
             .ForMember(dest => dest.PaymentType, opt =>
                 opt.MapFrom(src => nameof(src.Payment.PaymentType)))
+            .ForMember(dest => dest.FirstPhoto, opt =>
+            {
+                opt.Condition(src => src.Photos.Any());
+                opt.MapFrom(src => src.Photos.First().FilePath);
+            })
             
             .ForMember(dest => dest.StartCity, opt => 
                 opt.MapFrom(src => src.RoutePoints.OrderBy(r => r.OrderIndex).First().City))
