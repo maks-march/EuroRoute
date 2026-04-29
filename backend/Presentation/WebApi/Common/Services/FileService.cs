@@ -9,12 +9,11 @@ internal class FileService(IWebHostEnvironment enviroment) : IFileService
         if (files.Length == 0)
             return [];
         var paths = new List<string>();
-        var tasks = new List<Task>();
         foreach (var file in files)
         {
             // Генерируем уникальное имя файла, чтобы избежать конфликтов
             var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-            var filePath = Path.Combine(enviroment.WebRootPath, uniqueFileName);
+            var filePath = Path.Combine(enviroment.WebRootPath + "/uploads/", uniqueFileName);
 
             // Асинхронно копируем содержимое файла из временного хранилища в наш файл
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -37,17 +36,14 @@ internal class FileService(IWebHostEnvironment enviroment) : IFileService
 
             // Склеиваем wwwroot + относительный путь из базы
             var fullPath = relativePath;
-
-            try
+            if (File.Exists(fullPath))
             {
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
+                File.Delete(fullPath);
             }
-            catch
+            else
             {
-                allDeleted = false;
+                Console.WriteLine("Files not found");
+                throw new Exception("Files not found");
             }
         }
         return Task.FromResult(allDeleted);

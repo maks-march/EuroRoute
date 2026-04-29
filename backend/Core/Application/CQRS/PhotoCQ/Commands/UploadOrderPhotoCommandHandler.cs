@@ -4,6 +4,7 @@ using Domain.Models;
 using Domain.Models.Abstract;
 using Domain.Models.Order;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.PhotoCQ.Commands;
 
@@ -24,26 +25,17 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
 
         if (item is OrderEntity order)
         {
+            
             if (order.UserId != request.UserId)
                 throw new ForbiddenException(nameof(user), request.UserId);
-            var save = fileService.SaveFiles(cancellationToken, request.Photos);
-            var del = fileService.DeleteFiles(cancellationToken, order.Photos
+            var save = await fileService.SaveFiles(cancellationToken, request.Photos);
+            await fileService.DeleteFiles(cancellationToken, order.Photos
                 .Select(f => f.FilePath)
                 .ToArray());
-            try
-            {
-                if (!del.Result)
-                    throw new("Files clearing failed.");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Files update failed", ex);
-            }
 
-            UpdateCollection(order.Photos, save.Result, order);
+            UpdateCollection(order.Photos, save, order);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
-        
     }
     
     private void UpdateCollection(IList<OrderPhoto> fileCollection, string[] newList, OrderEntity owner)
@@ -54,6 +46,8 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
             if (i < newList.Length)
             {
                 existing.FilePath = newList[i];
+                existing.OrderIndex = i;
+                existing.Updated = DateTime.Now;
             }
             else
             {
@@ -72,7 +66,6 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
                     Updated = DateTime.Now,
                     FilePath = newList[i],
                     OwnerId = owner.Id,
-                    Owner = owner,
                     OrderIndex = i
                 };
             
@@ -83,6 +76,61 @@ public class UploadPhotoCommandHandler<TOwner>(IAppDbContext dbContext, IFileSer
 }
 
 public class UploadOrderPhotoCommandHandler(
-    IAppDbContext dbContext, 
+    IAppDbContext dbContext,
     IFileService fileService
-    ) : UploadPhotoCommandHandler<OrderEntity>(dbContext, fileService);
+) : IRequestHandler<UploadPhotoCommand<OrderEntity>>
+{
+    public async Task Handle(UploadPhotoCommand<OrderEntity> request, CancellationToken cancellationToken)
+    {
+        var order = await dbContext.GetDbSet<OrderEntity>()
+            .Include(x => x.Photos)
+            .FirstOrDefaultAsync(o => o.Id == request.ItemId, cancellationToken);
+        if (order == null)
+            throw new NotFoundException(nameof(order), request.ItemId);
+        if (order.UserId != request.UserId)
+            throw new ForbiddenException(nameof(order), request.UserId);
+        var save = await fileService.SaveFiles(cancellationToken, request.Photos);
+        await fileService.DeleteFiles(cancellationToken, order.Photos
+            .Select(f => f.FilePath)
+            .ToArray());
+
+        UpdateCollection(order.Photos, save, order);
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+    
+    private void UpdateCollection(IList<OrderPhoto> fileCollection, string[] newList, OrderEntity owner)
+    {
+        for (int i = fileCollection.Count - 1; i >= 0; i--)
+        {
+            var existing = fileCollection[i];
+            if (i < newList.Length)
+            {
+                existing.FilePath = newList[i];
+                existing.OrderIndex = i;
+                existing.Updated = DateTime.Now;
+            }
+            else
+            {
+                dbContext.GetDbSet<OrderPhoto>().Remove(existing);
+            }
+        }
+        
+        if (newList.Length > fileCollection.Count)
+        {
+            for (int i = fileCollection.Count; i < newList.Length; i++)
+            {
+                var newFile = new OrderPhoto
+                {
+                    Id = Guid.Empty,
+                    Created = DateTime.Now,
+                    Updated = DateTime.Now,
+                    FilePath = newList[i],
+                    OwnerId = owner.Id,
+                    OrderIndex = i
+                };
+            
+                fileCollection.Add(newFile);
+            }
+        }
+    }
+}

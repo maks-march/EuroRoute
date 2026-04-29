@@ -16,7 +16,7 @@ public static class ApplicationBuilderExtensions
     public static IApplicationBuilder UseStaticAssets(this IApplicationBuilder app, IWebHostEnvironment environment)
     {
         // Убеждаемся, что папка существует (важно при локальном запуске без докера)
-        var uploadsPath = Path.Combine(environment.ContentRootPath, "wwwroot");
+        var uploadsPath = Path.Combine(environment.ContentRootPath, "wwwroot/uploads");
         if (!Directory.Exists(uploadsPath))
         {
             Directory.CreateDirectory(uploadsPath);
@@ -25,7 +25,7 @@ public static class ApplicationBuilderExtensions
         // Настраиваем раздачу статики
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider(uploadsPath),
+            FileProvider = new PhysicalFileProvider(Path.Combine(environment.ContentRootPath, "wwwroot")),
             RequestPath = "/api/files"
         });
         return app;

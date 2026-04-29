@@ -14,7 +14,8 @@ public class GetOrderDetailsQueryHandler(
     public async Task<OrderDetailsVm> Handle(GetOrderDetailsQuery request, CancellationToken cancellationToken)
     {
         var order = await dbContext.Orders
-            .Include(order => order.Photos)
+            .Include(order => order.Photos
+                .OrderBy(r => r.OrderIndex))
             .Include(order => order.Payment)
             .Include(order => order.Transport)
             .Include(order => order.Payloads

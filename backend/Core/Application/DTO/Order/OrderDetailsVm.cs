@@ -32,7 +32,7 @@ public record OrderDetailsVm : CreateOrderCommand, IMapWith<OrderEntity>
                 opt.MapFrom(src => src.Status.ToString()))
             .ForMember(dest => 
                 dest.Photos,opt =>
-                opt.MapFrom(src => src.Photos.OrderBy(r => r.OrderIndex).Select(p => p.FilePath).ToArray()))
+                opt.MapFrom(src => src.Photos.Select(p => p.FilePath).ToArray()))
             
             // Настраиваем маппинг для вложенных DTO
             .ForMember(dest => 

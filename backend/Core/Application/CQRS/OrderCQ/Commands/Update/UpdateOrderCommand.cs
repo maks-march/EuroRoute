@@ -15,8 +15,10 @@ public record UpdateOrderCommand : IRequest<Guid>, IMapWith<OrderEntity>
     /// <summary>
     /// Идентификатор обновляемого заказа
     /// </summary>
+    [DefaultValue("")]
     public Guid Id { get; set; }
     
+    [DefaultValue("")]
     public Guid UserId { get; set; } = Guid.Empty;
 
     /// <summary>

@@ -117,9 +117,9 @@ public class OrderController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult> PutPhotos(Guid id, [FromForm]PhotoDto photos)
+    public async Task<ActionResult> PutPhotos(Guid id, [FromForm]PhotoDto? photos)
     {
-        var command = new UploadPhotoCommand<OrderEntity>(id, UserId, photos.Photos ?? []);
+        var command = new UploadPhotoCommand<OrderEntity>(id, UserId, photos?.Photos ?? []);
         await Mediator.Send(command);
         return NoContent();
     }

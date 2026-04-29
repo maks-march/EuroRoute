@@ -45,7 +45,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=db007a78_002D1908_002D486e_002D8388_002D7910a32b774d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;ApplicationTest&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="D:\progs\C#\EuroRoute\backend\Tests\ApplicationTest" Presentation="&amp;lt;ApplicationTest&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb004e8f_002D1296_002D4e6d_002Db802_002D7568cf53db6f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eb004e8f_002D1296_002D4e6d_002Db802_002D7568cf53db6f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;And&gt;&#xD;
     &lt;Namespace&gt;ApplicationTest&lt;/Namespace&gt;&#xD;
     &lt;Project Location="D:\progs\C#\EuroRoute\backend\Tests\ApplicationTest" Presentation="&amp;lt;ApplicationTest&amp;gt;" /&gt;&#xD;
